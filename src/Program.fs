@@ -24,6 +24,7 @@ let webApp: HttpHandler =
 
           // === DOMAIN ROUTES ===
           WorktreeApi.Users.Handlers.routes
+          WorktreeApi.Products.Handlers.routes
 
           RequestErrors.NOT_FOUND "Not Found" ]
 
