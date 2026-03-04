@@ -28,17 +28,14 @@ let webApp: HttpHandler =
 // === Server Configuration ===
 let configureApp (app: IApplicationBuilder) = app.UseGiraffe webApp
 
-let configureServices (services: IServiceCollection) =
-    services.AddGiraffe() |> ignore
+let configureServices (services: IServiceCollection) = services.AddGiraffe() |> ignore
 
 [<EntryPoint>]
 let main args =
-    Host.CreateDefaultBuilder(args)
+    Host
+        .CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(fun webHost ->
-            webHost
-                .Configure(configureApp)
-                .ConfigureServices(configureServices)
-            |> ignore)
+            webHost.Configure(configureApp).ConfigureServices(configureServices) |> ignore)
         .Build()
         .Run()
 
