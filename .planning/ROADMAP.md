@@ -30,11 +30,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. 독자가 `git worktree add`, `git worktree list`, `git worktree remove` 명령어를 tutorial 챕터를 따라 실행할 수 있다
   4. `claude --worktree` 플래그 사용법이 tutorial 챕터에 단계별로 문서화되어 있다
   5. tutorial/README.md index 파일과 Markdown 챕터 디렉토리 구조가 존재한다
-**Plans**: TBD
+**Plans**: 1 plan (TUT1-01, TUT1-02, TUTC-01, TUTC-02, TUTC-03 already satisfied by existing tutorial/ files)
 
 Plans:
-- [ ] 01-01: F# Giraffe project scaffold (FOUND-01 to FOUND-05)
-- [ ] 01-02: Tutorial chapter 01 — Introduction + worktree lifecycle (TUT1-01, TUT1-02, TUTC-01, TUTC-02, TUTC-03)
+- [ ] 01-01-PLAN.md — F# Giraffe project scaffold (FOUND-01 to FOUND-05)
 
 ### Phase 2: Parallel Modules (Scenario 1)
 **Goal**: 독자가 Users와 Products 모듈을 실제로 병렬 worktree에서 개발하고 clean merge를 경험한다
@@ -101,7 +100,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 0/1 | Not started | - |
 | 2. Parallel Modules (Scenario 1) | 0/3 | Not started | - |
 | 3. Merge + Conflict Resolution (Scenario 2) | 0/2 | Not started | - |
 | 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
