@@ -13,6 +13,8 @@
     <Compile Include="Users/Domain.fs" />
     <Compile Include="Users/Handlers.fs" />
     <!-- Products module -->
+    <Compile Include="Products/Domain.fs" />
+    <Compile Include="Products/Handlers.fs" />
     <!-- Orders module -->
 
     <!-- === ENTRY POINT (compile last) === -->

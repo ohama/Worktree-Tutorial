@@ -1,0 +1,66 @@
+namespace WorktreeApi.Products
+
+open System
+open Microsoft.AspNetCore.Http
+open Giraffe
+open WorktreeApi.Core
+
+module Handlers =
+
+    let getAll: HttpHandler =
+        fun next ctx ->
+            let products = Domain.getAll ()
+            json (ApiResponse.success products) next ctx
+
+    let getById (id: Guid) : HttpHandler =
+        fun next ctx ->
+            match Domain.getById id with
+            | Some product -> json (ApiResponse.success product) next ctx
+            | None ->
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "Product not found") next ctx
+
+    let create: HttpHandler =
+        fun next ctx ->
+            task {
+                let! req = ctx.BindJsonAsync<Domain.CreateProductRequest>()
+
+                match Domain.create req with
+                | Ok product ->
+                    ctx.SetStatusCode 201
+                    return! json (ApiResponse.success product) next ctx
+                | Error msg ->
+                    ctx.SetStatusCode 400
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let update (id: Guid) : HttpHandler =
+        fun next ctx ->
+            task {
+                let! req = ctx.BindJsonAsync<Domain.UpdateProductRequest>()
+
+                match Domain.update id req with
+                | Ok product -> return! json (ApiResponse.success product) next ctx
+                | Error msg ->
+                    ctx.SetStatusCode 404
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let delete (id: Guid) : HttpHandler =
+        fun next ctx ->
+            if Domain.delete id then
+                ctx.SetStatusCode 204
+                next ctx
+            else
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "Product not found") next ctx
+
+    let routes: HttpHandler =
+        subRoute
+            "/api/products"
+            (choose
+                [ GET
+                  >=> choose [ routef "/%O" getById; route "" >=> getAll ]
+                  POST >=> route "" >=> create
+                  PUT >=> routef "/%O" update
+                  DELETE >=> routef "/%O" delete ])
