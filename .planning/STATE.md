@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 2 of 5 (Parallel Modules)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-05 — Completed 02-01-PLAN.md (Users module + Expecto tests)
+Last activity: 2026-03-05 — Completed 02-02-PLAN.md (Products module + Products tests)
 
-Progress: [███░░░░░░░] 26%
+Progress: [████░░░░░░] 37%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 2.5 min
-- Total execution time: 5 min
+- Total plans completed: 3
+- Average duration: 2.3 min
+- Total execution time: 7 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 1/1 | 2 min | 2 min |
-| 02-parallel-modules | 1/3 | 3 min | 3 min |
+| 02-parallel-modules | 2/3 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 02-01 (3 min)
+- Last 5 plans: 01-01 (2 min), 02-01 (3 min), 02-02 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -53,6 +53,8 @@ Recent decisions affecting current work:
 - [02-01]: FsharpFriendlySerializer requires PropertyNameCaseInsensitive=true — F# record fields are PascalCase but JSON requests use lowercase; constructor takes second JsonSerializerOptions parameter
 - [02-01]: Role DU serializes as {"Case":"Admin"} with JsonFSharpOptions.Default() — tutorial JSON output examples in chapter 02 need updating
 - [02-01]: Test project duplicates domain logic rather than ProjectReference — simpler build, acceptable for tutorial
+- [02-02]: Products validation checks Price first, then Stock — error messages are deterministic
+- [02-02]: Products module has NO dependency on Users module — only depends on WorktreeApi.Core
 
 ### Pending Todos
 
@@ -66,6 +68,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05 22:41 UTC
-Stopped at: Completed 02-01-PLAN.md — Users module + Expecto tests complete
+Last session: 2026-03-04T22:46:40Z
+Stopped at: Completed 02-02-PLAN.md — Products module + Products tests complete
 Resume file: None
