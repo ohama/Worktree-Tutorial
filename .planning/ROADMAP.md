@@ -45,12 +45,12 @@ Plans:
   3. Expecto 테스트가 `dotnet test`로 실행되고 Users/Products 두 모듈 모두 통과한다
   4. 3개 터미널 병렬 세션 데모가 tutorial 챕터에 실행 가능한 형태로 문서화되어 있다
   5. 순차 개발 대비 병렬 효율성 비교가 tutorial 챕터에 포함되어 있다
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Users module (USER-01 to USER-04) + Expecto setup (TEST-01, TEST-02)
-- [ ] 02-02: Products module (PROD-01 to PROD-04) + tests (TEST-03)
-- [ ] 02-03: Tutorial chapter 02 — Parallel development scenario (TUT1-03, TUT1-04, TUT1-05, TUTC-05)
+- [ ] 02-01-PLAN.md — Users CRUD module (USER-01 to USER-04) + Expecto test infrastructure (TEST-01, TEST-02)
+- [ ] 02-02-PLAN.md — Products CRUD module (PROD-01 to PROD-04) + Products tests (TEST-03)
+- [ ] 02-03-PLAN.md — Verify and correct tutorial chapter 02 JSON output examples (TUT1-03, TUT1-04, TUT1-05, TUTC-05)
 
 ### Phase 3: Merge + Conflict Resolution (Scenario 2)
 **Goal**: 독자가 의도적 충돌 시나리오를 직접 해결하고 Orders 모듈을 통합해 3-모듈 API를 완성한다
