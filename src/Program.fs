@@ -1,5 +1,7 @@
 module WorktreeApi.App
 
+open System.Text.Json
+open System.Text.Json.Serialization
 open Microsoft.AspNetCore.Builder
 open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.DependencyInjection
@@ -21,14 +23,18 @@ let webApp: HttpHandler =
         [ GET >=> route "/health" >=> healthCheck
 
           // === DOMAIN ROUTES ===
-          // (각 worktree에서 여기에 route를 추가합니다)
+          WorktreeApi.Users.Handlers.routes
 
           RequestErrors.NOT_FOUND "Not Found" ]
 
 // === Server Configuration ===
 let configureApp (app: IApplicationBuilder) = app.UseGiraffe webApp
 
-let configureServices (services: IServiceCollection) = services.AddGiraffe() |> ignore
+let configureServices (services: IServiceCollection) =
+    services.AddGiraffe() |> ignore
+    let jsonOpts = JsonSerializerOptions(PropertyNameCaseInsensitive = true)
+    services.AddSingleton<Giraffe.Json.ISerializer>(
+        Giraffe.Json.FsharpFriendlySerializer(JsonFSharpOptions.Default(), jsonOpts)) |> ignore
 
 [<EntryPoint>]
 let main args =
