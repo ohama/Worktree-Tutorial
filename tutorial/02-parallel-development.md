@@ -295,11 +295,11 @@ $ dotnet run &
 $ curl -X POST http://localhost:5000/api/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Alice","email":"alice@example.com","role":"admin"}'
->>> {"data":{"id":{"case":"UserId","fields":["..."]},"name":"Alice",...},"message":"OK","success":true}
+>>> {"Data":{"Id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","Name":"Alice","Email":"alice@example.com","Role":{"Case":"Admin"},"CreatedAt":"2026-03-04T22:48:06.459146Z"},"Message":"OK","Success":true}
 
 # 전체 조회
 $ curl http://localhost:5000/api/users
->>> {"data":[{"id":...,"name":"Alice",...}],"message":"OK","success":true}
+>>> {"Data":[{"Id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","Name":"Alice","Email":"alice@example.com","Role":{"Case":"Admin"},"CreatedAt":"2026-03-04T22:48:06.459146Z"}],"Message":"OK","Success":true}
 
 $ kill %1
 ```
@@ -501,13 +501,13 @@ $ dotnet run &
 $ curl -X POST http://localhost:5000/api/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Keyboard","description":"Mechanical","price":89.99,"stock":50}'
->>> {"data":{"id":...,"name":"Keyboard",...,"stock":50},"message":"OK","success":true}
+>>> {"Data":{"Id":"b2c3d4e5-f6a7-8901-bcde-f12345678901","Name":"Keyboard","Description":"Mechanical","Price":89.99,"Stock":50,"CreatedAt":"2026-03-04T22:48:06.508125Z"},"Message":"OK","Success":true}
 
 # 유효성 검사 테스트
 $ curl -X POST http://localhost:5000/api/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Bad","description":"Negative","price":-10,"stock":5}'
->>> {"data":null,"message":"Price must be non-negative","success":false}
+>>> {"Data":null,"Message":"Price must be non-negative","Success":false}
 
 $ kill %1
 ```
@@ -584,17 +584,17 @@ $ dotnet run &
 $ curl -X POST http://localhost:5000/api/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Bob","email":"bob@example.com","role":"member"}'
->>> {"data":{...},"message":"OK","success":true}
+>>> {"Data":{"Id":"c3d4e5f6-a7b8-9012-cdef-012345678902","Name":"Bob","Email":"bob@example.com","Role":{"Case":"Member"},"CreatedAt":"2026-03-04T22:50:00.000000Z"},"Message":"OK","Success":true}
 
 # Products API 확인
 $ curl -X POST http://localhost:5000/api/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Mouse","description":"Wireless","price":29.99,"stock":100}'
->>> {"data":{...},"message":"OK","success":true}
+>>> {"Data":{"Id":"d4e5f6a7-b8c9-0123-defa-123456789003","Name":"Mouse","Description":"Wireless","Price":29.99,"Stock":100,"CreatedAt":"2026-03-04T22:50:00.100000Z"},"Message":"OK","Success":true}
 
 # Health check도 여전히 동작
 $ curl http://localhost:5000/health
->>> {"status":"healthy","timestamp":"..."}
+>>> {"status":"healthy","timestamp":"2026-03-04T22:50:00.200000Z"}
 
 $ kill %1
 ```
