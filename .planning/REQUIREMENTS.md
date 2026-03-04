@@ -105,11 +105,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
-| FOUND-05 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
+| FOUND-04 | Phase 1 | Complete |
+| FOUND-05 | Phase 1 | Complete |
 | USER-01 | Phase 2 | Pending |
 | USER-02 | Phase 2 | Pending |
 | USER-03 | Phase 2 | Pending |
@@ -126,8 +126,8 @@
 | TEST-02 | Phase 2 | Pending |
 | TEST-03 | Phase 2 | Pending |
 | TEST-04 | Phase 3 | Pending |
-| TUT1-01 | Phase 1 | Pending |
-| TUT1-02 | Phase 1 | Pending |
+| TUT1-01 | Phase 1 | Complete |
+| TUT1-02 | Phase 1 | Complete |
 | TUT1-03 | Phase 2 | Pending |
 | TUT1-04 | Phase 2 | Pending |
 | TUT1-05 | Phase 2 | Pending |
@@ -141,9 +141,9 @@
 | TUT4-01 | Phase 5 | Pending |
 | TUT4-02 | Phase 5 | Pending |
 | TUT4-03 | Phase 5 | Pending |
-| TUTC-01 | Phase 1 | Pending |
-| TUTC-02 | Phase 1 | Pending |
-| TUTC-03 | Phase 1 | Pending |
+| TUTC-01 | Phase 1 | Complete |
+| TUTC-02 | Phase 1 | Complete |
+| TUTC-03 | Phase 1 | Complete |
 | TUTC-04 | Phase 4 | Pending |
 | TUTC-05 | Phase 2 | Pending |
 

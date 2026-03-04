@@ -12,7 +12,7 @@ F# Giraffe REST API를 예제 코드베이스로 사용하여 Claude Code와 git
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** — 공유 코드베이스 scaffold + worktree 기초 설명 챕터
+- [x] **Phase 1: Foundation** — 공유 코드베이스 scaffold + worktree 기초 설명 챕터
 - [ ] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
 - [ ] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
 - [ ] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 1 plan (TUT1-01, TUT1-02, TUTC-01, TUTC-02, TUTC-03 already satisfied by existing tutorial/ files)
 
 Plans:
-- [ ] 01-01-PLAN.md — F# Giraffe project scaffold (FOUND-01 to FOUND-05)
+- [x] 01-01-PLAN.md — F# Giraffe project scaffold (FOUND-01 to FOUND-05)
 
 ### Phase 2: Parallel Modules (Scenario 1)
 **Goal**: 독자가 Users와 Products 모듈을 실제로 병렬 worktree에서 개발하고 clean merge를 경험한다
@@ -100,7 +100,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/1 | Not started | - |
+| 1. Foundation | 1/1 | ✓ Complete | 2026-03-05 |
 | 2. Parallel Modules (Scenario 1) | 0/3 | Not started | - |
 | 3. Merge + Conflict Resolution (Scenario 2) | 0/2 | Not started | - |
 | 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
