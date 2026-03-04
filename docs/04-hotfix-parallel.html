@@ -1,0 +1,568 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Hotfix Parallel - Git Worktree Tutorial</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Git Worktree를 활용한 병렬 개발 실전 튜토리얼">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-14d6f6a0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-ae7a719f.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Git Worktree Tutorial</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="chapter-04-hotfix-parallel-scenario-3"><a class="header" href="#chapter-04-hotfix-parallel-scenario-3">Chapter 04: Hotfix Parallel (Scenario 3)</a></h1>
+<p>이 챕터에서는 <strong>feature 개발 중에 긴급 버그 수정</strong>이 필요한 실전 시나리오를 다룹니다. worktree 덕분에 feature 작업을 중단하지 않고 hotfix를 병행할 수 있습니다.</p>
+<h2 id="시나리오"><a class="header" href="#시나리오">시나리오</a></h2>
+<p>당신은 새로운 검색 기능을 개발하고 있습니다. 그런데 프로덕션에서 <strong>긴급 버그</strong>가 발견되었습니다 — Users API의 delete endpoint가 존재하지 않는 user를 삭제할 때 204 대신 500을 반환합니다.</p>
+<p>기존 workflow (worktree 없이):</p>
+<pre><code>feature 작업 중...
+  │
+  ├── git stash (작업 중단!)
+  ├── git switch main
+  ├── hotfix 작성
+  ├── commit + push
+  ├── git switch feature/search
+  ├── git stash pop (작업 복원)
+  └── 작업 재개... (context 잃어버림)
+</code></pre>
+<p>worktree workflow:</p>
+<pre><code>feature 작업 계속 진행 중...
+  │                              별도 worktree에서:
+  │                              ├── hotfix 작성
+  │                              ├── commit
+  │                              └── main에 merge
+  │                                    │
+  ▼                                    ▼
+feature를 updated main에 rebase
+</code></pre>
+<p><strong>핵심 차이</strong>: feature 작업이 <strong>한 번도 중단되지 않습니다.</strong></p>
+<hr>
+<h2 id="step-1-feature-개발-시작"><a class="header" href="#step-1-feature-개발-시작">Step 1: Feature 개발 시작</a></h2>
+<p>먼저 새 feature를 위한 worktree를 만들고 작업을 시작합니다.</p>
+<p><strong>Terminal 1</strong> (main):</p>
+<pre><code class="language-bash"># 검색 기능 worktree 생성
+$ git worktree add ../worktree-tutorial-search -b feature/search
+&gt;&gt;&gt; Preparing worktree (new branch 'feature/search')
+&gt;&gt;&gt; HEAD is now at ccc3333 merge: resolve Core.fs conflict
+</code></pre>
+<p><strong>Terminal 2</strong> (feature/search):</p>
+<pre><code class="language-bash">$ cd ../worktree-tutorial-search
+$ claude   # 또는 직접 작업
+
+# 검색 기능 개발 시작 — Core.fs에 SearchQuery 타입 추가
+</code></pre>
+<p><code>src/Core.fs</code>에 추가:</p>
+<pre><code class="language-fsharp">    // === Search ===
+    type SearchQuery =
+        { Query: string
+          Page: int
+          PageSize: int }
+
+    module SearchQuery =
+        let defaultQuery q =
+            { Query = q; Page = 1; PageSize = 20 }
+</code></pre>
+<p><strong>이 시점에서 작업이 진행 중입니다. commit하지 않았습니다.</strong></p>
+<hr>
+<h2 id="step-2-긴급-버그-발견"><a class="header" href="#step-2-긴급-버그-발견">Step 2: 긴급 버그 발견!</a></h2>
+<p>프로덕션에서 버그 리포트가 들어옵니다:</p>
+<blockquote>
+<p>“DELETE /api/users/{id} — 존재하지 않는 ID로 요청하면 500 Internal Server Error가 발생합니다.”</p>
+</blockquote>
+<p><strong>긴급 수정이 필요합니다.</strong> 하지만 feature/search 작업을 중단하고 싶지 않습니다.</p>
+<h3 id="hotfix-worktree-생성"><a class="header" href="#hotfix-worktree-생성">Hotfix worktree 생성</a></h3>
+<p><strong>Terminal 1</strong> (main)에서 hotfix worktree를 만듭니다:</p>
+<pre><code class="language-bash"># main에서 hotfix 브랜치 생성
+$ git worktree add ../worktree-tutorial-hotfix -b hotfix/users-delete-404
+&gt;&gt;&gt; Preparing worktree (new branch 'hotfix/users-delete-404')
+&gt;&gt;&gt; HEAD is now at ccc3333 merge: resolve Core.fs conflict
+</code></pre>
+<p>현재 상태:</p>
+<pre><code>worktree-tutorial/            [main]                  ← Terminal 1
+worktree-tutorial-search/     [feature/search]        ← Terminal 2 (작업 중!)
+worktree-tutorial-hotfix/     [hotfix/users-delete-404] ← Terminal 3 (새로 생성)
+</code></pre>
+<hr>
+<h2 id="step-3-hotfix-작성"><a class="header" href="#step-3-hotfix-작성">Step 3: Hotfix 작성</a></h2>
+<p><strong>Terminal 3</strong> (hotfix worktree)에서 버그를 수정합니다. feature/search 작업은 <strong>그대로 계속 진행</strong>됩니다.</p>
+<pre><code class="language-bash">$ cd ../worktree-tutorial-hotfix
+</code></pre>
+<h3 id="버그-확인"><a class="header" href="#버그-확인">버그 확인</a></h3>
+<p><code>src/Users/Handlers.fs</code>의 delete 핸들러를 확인합니다:</p>
+<pre><code class="language-fsharp">    let delete (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            if Domain.delete id then
+                ctx.SetStatusCode 204
+                next ctx
+            else
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "User not found") next ctx
+</code></pre>
+<p>코드 자체는 맞아 보입니다. <code>Domain.delete</code>를 확인합니다:</p>
+<p><code>src/Users/Domain.fs</code>:</p>
+<pre><code class="language-fsharp">    let delete (id: Guid) = store.TryRemove(id) |&gt; fst
+</code></pre>
+<p><code>ConcurrentDictionary.TryRemove</code>는 key가 없으면 <code>false</code>를 반환하므로 500이 아닌 404를 반환해야 합니다. 실제 버그는 다른 곳에 있을 수 있습니다.</p>
+<blockquote>
+<p><strong>튜토리얼 목적으로</strong> 버그를 시뮬레이션합니다. 실제로 버그를 하나 만들어봅시다.</p>
+</blockquote>
+<h3 id="버그-시뮬레이션-튜토리얼용"><a class="header" href="#버그-시뮬레이션-튜토리얼용">버그 시뮬레이션 (튜토리얼용)</a></h3>
+<p>이 시나리오를 연습하기 위해, 에러 응답에 적절한 status code를 추가하는 개선을 hotfix로 처리합니다.</p>
+<p><code>src/Users/Handlers.fs</code>의 delete 핸들러를 개선합니다:</p>
+<pre><code class="language-fsharp">    let delete (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            match Domain.getById id with
+            | None -&gt;
+                ctx.SetStatusCode 404
+                json (ApiResponse.error (sprintf "User %O not found" id)) next ctx
+            | Some _ -&gt;
+                Domain.delete id |&gt; ignore
+                ctx.SetStatusCode 204
+                next ctx
+</code></pre>
+<p>변경점: 삭제 전에 존재 여부를 먼저 확인하고, 에러 메시지에 ID를 포함시킵니다.</p>
+<h3 id="빌드-확인-및-커밋"><a class="header" href="#빌드-확인-및-커밋">빌드 확인 및 커밋</a></h3>
+<pre><code class="language-bash">$ cd src &amp;&amp; dotnet build
+&gt;&gt;&gt; Build succeeded.
+
+$ cd ..
+$ git add -A
+$ git commit -m "fix: improve Users delete handler — check existence before delete, include ID in error"
+&gt;&gt;&gt; [hotfix/users-delete-404 ddd4444] fix: improve Users delete handler
+</code></pre>
+<hr>
+<h2 id="step-4-hotfix를-main에-merge"><a class="header" href="#step-4-hotfix를-main에-merge">Step 4: Hotfix를 Main에 Merge</a></h2>
+<p><strong>Terminal 1</strong> (main)에서:</p>
+<pre><code class="language-bash"># hotfix를 main에 merge
+$ git merge hotfix/users-delete-404
+&gt;&gt;&gt; Updating ccc3333..ddd4444
+&gt;&gt;&gt; Fast-forward
+&gt;&gt;&gt;  src/Users/Handlers.fs | 8 +++++---
+&gt;&gt;&gt;  1 file changed, 5 insertions(+), 3 deletions(-)
+</code></pre>
+<p>Clean fast-forward merge. 프로덕션에 hotfix가 적용되었습니다.</p>
+<h3 id="hotfix-worktree-정리"><a class="header" href="#hotfix-worktree-정리">Hotfix worktree 정리</a></h3>
+<pre><code class="language-bash">$ git worktree remove ../worktree-tutorial-hotfix
+&gt;&gt;&gt; Removing worktree '/path/to/worktree-tutorial-hotfix'
+
+$ git branch -d hotfix/users-delete-404
+&gt;&gt;&gt; Deleted branch hotfix/users-delete-404 (was ddd4444).
+</code></pre>
+<hr>
+<h2 id="step-5-feature-branch를-updated-main에-rebase"><a class="header" href="#step-5-feature-branch를-updated-main에-rebase">Step 5: Feature Branch를 Updated Main에 Rebase</a></h2>
+<p>feature/search는 hotfix <strong>이전의</strong> main에서 분기되었습니다. main이 업데이트되었으므로, feature branch를 최신 main 위에 rebase합니다.</p>
+<p><strong>Terminal 2</strong> (feature/search)에서:</p>
+<pre><code class="language-bash"># 먼저 진행 중인 작업을 commit (또는 stash)
+$ git add -A
+$ git commit -m "wip: search query types"
+&gt;&gt;&gt; [feature/search eee5555] wip: search query types
+
+# main의 최신 상태를 가져오기
+# (worktree는 같은 repo를 공유하므로 fetch 불필요 — 이미 보임)
+$ git log --oneline main
+&gt;&gt;&gt; ddd4444 (main) fix: improve Users delete handler
+&gt;&gt;&gt; ccc3333 merge: resolve Core.fs conflict
+&gt;&gt;&gt; ...
+
+# main 위에 rebase
+$ git rebase main
+&gt;&gt;&gt; Successfully rebased and updated refs/heads/feature/search.
+</code></pre>
+<blockquote>
+<p><strong>왜 merge 대신 rebase인가?</strong></p>
+<p>Feature branch에서는 <code>rebase</code>가 <code>merge</code>보다 깔끔합니다:</p>
+<ul>
+<li><strong>rebase</strong>: feature commit들이 main 최신 위에 놓임 → 선형적 history</li>
+<li><strong>merge</strong>: merge commit이 생기고 history가 복잡해짐</li>
+</ul>
+<pre><code>rebase:
+main ── A ── B (hotfix) ── C (feature commit, rebased)
+
+merge:
+main ── A ── B (hotfix) ──── M (merge commit)
+                         ╱
+feature ─── C ──────────╱
+</code></pre>
+</blockquote>
+<h3 id="rebase-충돌이-발생한-경우"><a class="header" href="#rebase-충돌이-발생한-경우">Rebase 충돌이 발생한 경우</a></h3>
+<p>만약 hotfix가 수정한 파일을 feature에서도 수정했다면 rebase 중 충돌이 발생할 수 있습니다:</p>
+<pre><code class="language-bash">$ git rebase main
+&gt;&gt;&gt; CONFLICT (content): Merge conflict in src/Users/Handlers.fs
+&gt;&gt;&gt; error: could not apply eee5555... wip: search query types
+&gt;&gt;&gt;
+&gt;&gt;&gt; Resolve all conflicts manually, mark them as resolved with
+&gt;&gt;&gt; "git add &lt;pathspec&gt;" then run "git rebase --continue".
+
+# 충돌 해결
+$ vim src/Users/Handlers.fs   # 충돌 마커 해결
+$ cd src &amp;&amp; dotnet build       # 빌드 확인
+$ cd ..
+$ git add src/Users/Handlers.fs
+$ git rebase --continue
+&gt;&gt;&gt; Successfully rebased and updated refs/heads/feature/search.
+</code></pre>
+<h3 id="rebase-후-확인"><a class="header" href="#rebase-후-확인">Rebase 후 확인</a></h3>
+<pre><code class="language-bash">$ git log --oneline
+&gt;&gt;&gt; fff6666 (HEAD -&gt; feature/search) wip: search query types
+&gt;&gt;&gt; ddd4444 (main) fix: improve Users delete handler
+&gt;&gt;&gt; ccc3333 merge: resolve Core.fs conflict
+&gt;&gt;&gt; ...
+</code></pre>
+<p>feature/search commit이 hotfix commit <strong>위에</strong> 깔끔하게 놓여있습니다.</p>
+<hr>
+<h2 id="step-6-feature-작업-계속"><a class="header" href="#step-6-feature-작업-계속">Step 6: Feature 작업 계속</a></h2>
+<p>Rebase가 완료되었으므로 feature 개발을 계속합니다. hotfix의 변경사항이 이미 포함되어 있으므로 충돌 걱정 없이 작업할 수 있습니다.</p>
+<pre><code class="language-bash"># feature 개발 계속...
+# (실제로는 여기서 검색 기능을 완성하고 commit)
+
+# 작업 완료 후 main에 merge
+# Terminal 1 (main)에서:
+$ git merge feature/search
+&gt;&gt;&gt; Fast-forward (또는 merge commit)
+</code></pre>
+<hr>
+<h2 id="전체-타임라인-정리"><a class="header" href="#전체-타임라인-정리">전체 타임라인 정리</a></h2>
+<pre><code>시간 ──────────────────────────────────────────────────────────►
+
+Terminal 2 (feature/search):
+    [search 작업 시작]──────────[계속 작업]──────[commit]──[rebase]──[계속]
+                                    │                        ▲
+                                    │                        │
+Terminal 3 (hotfix):                │                        │
+                        [hotfix 생성]─[수정]─[commit]        │
+                                            │                │
+Terminal 1 (main):                          │                │
+    ────────────────────────────[merge hotfix]────────────────
+
+핵심: feature 작업이 단 한 번도 중단되지 않았습니다!
+</code></pre>
+<hr>
+<h2 id="worktree-lifecycle-전체-정리"><a class="header" href="#worktree-lifecycle-전체-정리">Worktree Lifecycle 전체 정리</a></h2>
+<p>이 튜토리얼을 통해 경험한 worktree lifecycle:</p>
+<h3 id="1-생성-create"><a class="header" href="#1-생성-create">1. 생성 (Create)</a></h3>
+<pre><code class="language-bash"># 새 브랜치와 함께 생성
+$ git worktree add ../project-feature -b feature/name
+
+# 기존 브랜치로 생성
+$ git worktree add ../project-feature feature/name
+
+# Claude Code 통합
+$ claude --worktree feature-name
+</code></pre>
+<h3 id="2-확인-list"><a class="header" href="#2-확인-list">2. 확인 (List)</a></h3>
+<pre><code class="language-bash">$ git worktree list
+&gt;&gt;&gt; /path/to/main     abc1234 [main]
+&gt;&gt;&gt; /path/to/feature  def5678 [feature/name]
+</code></pre>
+<h3 id="3-작업-work"><a class="header" href="#3-작업-work">3. 작업 (Work)</a></h3>
+<pre><code class="language-bash">$ cd ../project-feature
+$ claude   # 또는 직접 편집
+# ... 개발 ...
+$ git add -A &amp;&amp; git commit -m "feat: ..."
+</code></pre>
+<h3 id="4-동기화-sync"><a class="header" href="#4-동기화-sync">4. 동기화 (Sync)</a></h3>
+<pre><code class="language-bash"># worktree에서 main의 최신 변경 가져오기
+$ git rebase main
+
+# 또는 main에서 worktree의 브랜치 merge
+$ cd ../main-project
+$ git merge feature/name
+</code></pre>
+<h3 id="5-정리-cleanup"><a class="header" href="#5-정리-cleanup">5. 정리 (Cleanup)</a></h3>
+<pre><code class="language-bash"># worktree 제거
+$ git worktree remove ../project-feature
+
+# 브랜치 정리 (merge 완료 후)
+$ git branch -d feature/name
+
+# stale metadata 정리 (실수로 rm -rf한 경우)
+$ git worktree prune
+</code></pre>
+<h3 id="주의사항-요약"><a class="header" href="#주의사항-요약">주의사항 요약</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>규칙</th><th>이유</th></tr>
+</thead>
+<tbody>
+<tr><td>sibling 디렉토리에 생성</td><td>repo 내부에 생성하면 IDE 혼란</td></tr>
+<tr><td><code>git worktree remove</code> 사용</td><td><code>rm -rf</code>는 stale metadata 남김</td></tr>
+<tr><td>하나의 브랜치 = 하나의 worktree</td><td>같은 브랜치를 2개 체크아웃 불가</td></tr>
+<tr><td>포트 번호 분리</td><td>동시 서버 실행 시 충돌 방지</td></tr>
+<tr><td>commit 후 rebase</td><td>stash보다 안전하고 history 깔끔</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h2 id="연습-문제"><a class="header" href="#연습-문제">연습 문제</a></h2>
+<h3 id="challenge-1-동시-hotfix"><a class="header" href="#challenge-1-동시-hotfix">Challenge 1: 동시 hotfix</a></h3>
+<p>2개의 hotfix가 동시에 필요한 상황을 시뮬레이션하세요:</p>
+<ul>
+<li>hotfix/users-bug: Users 모듈 수정</li>
+<li>hotfix/products-bug: Products 모듈 수정</li>
+</ul>
+<p>두 hotfix worktree를 동시에 만들고, 각각 수정하고, 순서대로 main에 merge하세요.</p>
+<details>
+<summary>힌트</summary>
+<pre><code class="language-bash">$ git worktree add ../project-hotfix-users -b hotfix/users-bug
+$ git worktree add ../project-hotfix-products -b hotfix/products-bug
+
+# 각 worktree에서 수정 + commit
+
+# main에서 순서대로 merge
+$ git merge hotfix/users-bug
+$ git merge hotfix/products-bug    # 다른 파일이면 충돌 없음
+</code></pre>
+</details>
+<h3 id="challenge-2-rebase-중-충돌"><a class="header" href="#challenge-2-rebase-중-충돌">Challenge 2: Rebase 중 충돌</a></h3>
+<p>feature branch에서 <code>Core.fs</code>를 수정한 상태에서, hotfix도 <code>Core.fs</code>를 수정한 경우의 rebase 충돌을 직접 만들고 해결해보세요.</p>
+<details>
+<summary>힌트</summary>
+<ol>
+<li>feature worktree에서 Core.fs의 ApiResponse에 필드 추가</li>
+<li>hotfix worktree에서 Core.fs의 같은 ApiResponse에 다른 필드 추가</li>
+<li>hotfix를 main에 merge</li>
+<li>feature에서 <code>git rebase main</code> → 충돌 발생</li>
+<li>충돌 해결 후 <code>git rebase --continue</code></li>
+</ol>
+</details>
+<h3 id="challenge-3-claude-worktree로-hotfix"><a class="header" href="#challenge-3-claude-worktree로-hotfix">Challenge 3: claude –worktree로 hotfix</a></h3>
+<p>수동 worktree 대신 <code>claude --worktree</code>를 사용해서 hotfix 시나리오를 재현해보세요.</p>
+<details>
+<summary>힌트</summary>
+<pre><code class="language-bash"># main에서
+$ claude --worktree hotfix-test
+
+# Claude Code 세션 안에서:
+# "src/Products/Handlers.fs의 delete 핸들러를 개선해줘"
+
+# 세션 종료 시 worktree 유지 선택
+# main에서 merge
+</code></pre>
+</details>
+<hr>
+<h2 id="다음-챕터"><a class="header" href="#다음-챕터">다음 챕터</a></h2>
+<p>모든 개발 시나리오를 마스터했습니다. 마지막 챕터에서는 이 워크플로우를 <strong>CI/CD와 통합</strong>하여 팀 전체가 활용할 수 있게 만듭니다.</p>
+<p><a href="./05-cicd-integration.html">Chapter 05: CI/CD Integration →</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="03-merge-conflicts.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="05-cicd-integration.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="03-merge-conflicts.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="05-cicd-integration.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

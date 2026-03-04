@@ -1,0 +1,850 @@
+<!DOCTYPE HTML>
+<html lang="ko" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Parallel Development - Git Worktree Tutorial</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Git Worktree를 활용한 병렬 개발 실전 튜토리얼">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-14d6f6a0.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-ae7a719f.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Git Worktree Tutorial</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="chapter-02-parallel-development-scenario-1"><a class="header" href="#chapter-02-parallel-development-scenario-1">Chapter 02: Parallel Development (Scenario 1)</a></h1>
+<p>이 챕터에서는 Users 모듈과 Products 모듈을 <strong>2개의 worktree에서 동시에</strong> 개발하고, main으로 merge합니다.</p>
+<h2 id="전체-흐름"><a class="header" href="#전체-흐름">전체 흐름</a></h2>
+<pre><code>[main] ─── Core.fs, Program.fs (foundation)
+   │
+   ├──── [feature/users]    ──── Users 모듈 개발 ──── commit ──┐
+   │     (Terminal 2)                                           │
+   │                                                            ├── merge to main
+   ├──── [feature/products] ──── Products 모듈 개발 ── commit ──┘
+   │     (Terminal 3)
+   │
+   ▼
+[main] ─── 두 모듈이 합쳐진 완성된 API
+</code></pre>
+<hr>
+<h2 id="step-1-worktree-생성"><a class="header" href="#step-1-worktree-생성">Step 1: Worktree 생성</a></h2>
+<p><strong>Terminal 1</strong> (main — 프로젝트 루트에서):</p>
+<pre><code class="language-bash"># 현재 위치 확인
+$ pwd
+&gt;&gt;&gt; /path/to/worktree-tutorial
+
+# Users worktree 생성
+$ git worktree add ../worktree-tutorial-users -b feature/users
+&gt;&gt;&gt; Preparing worktree (new branch 'feature/users')
+&gt;&gt;&gt; HEAD is now at abc1234 feat: initialize F# Giraffe project
+
+# Products worktree 생성
+$ git worktree add ../worktree-tutorial-products -b feature/products
+&gt;&gt;&gt; Preparing worktree (new branch 'feature/products')
+&gt;&gt;&gt; HEAD is now at abc1234 feat: initialize F# Giraffe project
+
+# 3개의 worktree 확인
+$ git worktree list
+&gt;&gt;&gt; /path/to/worktree-tutorial           abc1234 [main]
+&gt;&gt;&gt; /path/to/worktree-tutorial-users     abc1234 [feature/users]
+&gt;&gt;&gt; /path/to/worktree-tutorial-products  abc1234 [feature/products]
+</code></pre>
+<p>디렉토리 구조가 이렇게 됩니다:</p>
+<pre><code>parent-directory/
+├── worktree-tutorial/           ← main (Terminal 1)
+├── worktree-tutorial-users/     ← feature/users (Terminal 2)
+└── worktree-tutorial-products/  ← feature/products (Terminal 3)
+</code></pre>
+<h2 id="step-2-각-worktree에서-claude-code-시작"><a class="header" href="#step-2-각-worktree에서-claude-code-시작">Step 2: 각 worktree에서 Claude Code 시작</a></h2>
+<p><strong>3개의 터미널</strong>을 엽니다. iTerm2의 split pane, tmux, 또는 별도 터미널 창을 사용하세요.</p>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│ Terminal 1 (main)        │ Terminal 2 (users)            │
+│ /worktree-tutorial       │ /worktree-tutorial-users      │
+│                          │                               │
+│ $ # 대기 (merge 담당)     │ $ cd ../worktree-tutorial-users│
+│                          │ $ claude                      │
+├──────────────────────────┼───────────────────────────────┤
+│ Terminal 3 (products)    │                               │
+│ /worktree-tutorial-prods │                               │
+│                          │                               │
+│ $ cd ../worktree-tutorial│                               │
+│   -products              │                               │
+│ $ claude                 │                               │
+└──────────────────────────┴───────────────────────────────┘
+</code></pre>
+<p><strong>Terminal 2</strong> (Users worktree):</p>
+<pre><code class="language-bash">$ cd ../worktree-tutorial-users
+$ claude
+</code></pre>
+<p><strong>Terminal 3</strong> (Products worktree):</p>
+<pre><code class="language-bash">$ cd ../worktree-tutorial-products
+$ claude
+</code></pre>
+<blockquote>
+<p><strong>Tip: 세션 이름 지정</strong></p>
+<p>Claude Code에서 <code>/rename</code> 명령으로 세션에 이름을 붙이면 구분하기 쉽습니다:</p>
+<ul>
+<li>Terminal 2에서: <code>/rename users-module</code></li>
+<li>Terminal 3에서: <code>/rename products-module</code></li>
+</ul>
+</blockquote>
+<p>이제 <strong>두 개의 Claude Code 세션이 동시에</strong> 실행되고 있습니다. 각각 독립된 worktree에서 작업합니다.</p>
+<hr>
+<h2 id="step-3-users-모듈-개발"><a class="header" href="#step-3-users-모듈-개발">Step 3: Users 모듈 개발</a></h2>
+<p><strong>Terminal 2</strong> (feature/users worktree)에서 Claude Code에게 다음과 같이 요청합니다:</p>
+<blockquote>
+<p>“Users 모듈을 만들어줘. src/Users/ 디렉토리에 Domain.fs와 Handlers.fs를 작성하고, .fsproj에 추가해줘.”</p>
+</blockquote>
+<p>또는 직접 파일을 작성합니다:</p>
+<h3 id="srcusersdomainfs"><a class="header" href="#srcusersdomainfs"><code>src/Users/Domain.fs</code></a></h3>
+<pre><code class="language-fsharp">namespace WorktreeApi.Users
+
+open System
+open System.Collections.Concurrent
+open WorktreeApi.Core
+
+module Domain =
+
+    type Role =
+        | Admin
+        | Member
+        | Guest
+
+    type User =
+        { Id: UserId
+          Name: string
+          Email: string
+          Role: Role
+          CreatedAt: DateTime }
+
+    type CreateUserRequest = { Name: string; Email: string; Role: string }
+
+    type UpdateUserRequest =
+        { Name: string option
+          Email: string option
+          Role: string option }
+
+    // === In-Memory Store ===
+    let private store = ConcurrentDictionary&lt;Guid, User&gt;()
+
+    let parseRole =
+        function
+        | "admin" | "Admin" -&gt; Some Admin
+        | "member" | "Member" -&gt; Some Member
+        | "guest" | "Guest" -&gt; Some Guest
+        | _ -&gt; None
+
+    let create (req: CreateUserRequest) =
+        match parseRole req.Role with
+        | None -&gt; Error "Invalid role. Use: admin, member, guest"
+        | Some role -&gt;
+            let id = Guid.NewGuid()
+
+            let user =
+                { Id = UserId id
+                  Name = req.Name
+                  Email = req.Email
+                  Role = role
+                  CreatedAt = DateTime.UtcNow }
+
+            store.[id] &lt;- user
+            Ok user
+
+    let getAll () = store.Values |&gt; Seq.toList
+
+    let getById (id: Guid) =
+        match store.TryGetValue(id) with
+        | true, user -&gt; Some user
+        | false, _ -&gt; None
+
+    let update (id: Guid) (req: UpdateUserRequest) =
+        match store.TryGetValue(id) with
+        | false, _ -&gt; Error "User not found"
+        | true, user -&gt;
+            let role =
+                req.Role
+                |&gt; Option.bind parseRole
+                |&gt; Option.defaultValue user.Role
+
+            let updated =
+                { user with
+                    Name = req.Name |&gt; Option.defaultValue user.Name
+                    Email = req.Email |&gt; Option.defaultValue user.Email
+                    Role = role }
+
+            store.[id] &lt;- updated
+            Ok updated
+
+    let delete (id: Guid) = store.TryRemove(id) |&gt; fst
+</code></pre>
+<h3 id="srcusershandlersfs"><a class="header" href="#srcusershandlersfs"><code>src/Users/Handlers.fs</code></a></h3>
+<pre><code class="language-fsharp">namespace WorktreeApi.Users
+
+open System
+open Microsoft.AspNetCore.Http
+open Giraffe
+open WorktreeApi.Core
+
+module Handlers =
+
+    let getAll: HttpHandler =
+        fun next ctx -&gt;
+            let users = Domain.getAll ()
+            json (ApiResponse.success users) next ctx
+
+    let getById (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            match Domain.getById id with
+            | Some user -&gt; json (ApiResponse.success user) next ctx
+            | None -&gt;
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "User not found") next ctx
+
+    let create: HttpHandler =
+        fun next ctx -&gt;
+            task {
+                let! req = ctx.BindJsonAsync&lt;Domain.CreateUserRequest&gt;()
+
+                match Domain.create req with
+                | Ok user -&gt;
+                    ctx.SetStatusCode 201
+                    return! json (ApiResponse.success user) next ctx
+                | Error msg -&gt;
+                    ctx.SetStatusCode 400
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let update (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            task {
+                let! req = ctx.BindJsonAsync&lt;Domain.UpdateUserRequest&gt;()
+
+                match Domain.update id req with
+                | Ok user -&gt; return! json (ApiResponse.success user) next ctx
+                | Error msg -&gt;
+                    ctx.SetStatusCode 404
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let delete (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            if Domain.delete id then
+                ctx.SetStatusCode 204
+                next ctx
+            else
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "User not found") next ctx
+
+    let routes: HttpHandler =
+        subRoute
+            "/api/users"
+            (choose
+                [ GET
+                  &gt;=&gt; choose [ routef "/%O" getById; route "" &gt;=&gt; getAll ]
+                  POST &gt;=&gt; route "" &gt;=&gt; create
+                  PUT &gt;=&gt; routef "/%O" update
+                  DELETE &gt;=&gt; routef "/%O" delete ])
+</code></pre>
+<h3 id="fsproj-수정-users-worktree에서"><a class="header" href="#fsproj-수정-users-worktree에서"><code>.fsproj</code> 수정 (Users worktree에서)</a></h3>
+<p><code>src/WorktreeApi.fsproj</code>의 <code>&lt;!-- Users module --&gt;</code> 주석을 다음으로 교체:</p>
+<pre><code class="language-xml">    &lt;!-- Users module --&gt;
+    &lt;Compile Include="Users/Domain.fs" /&gt;
+    &lt;Compile Include="Users/Handlers.fs" /&gt;
+</code></pre>
+<h3 id="programfs-수정-users-worktree에서"><a class="header" href="#programfs-수정-users-worktree에서"><code>Program.fs</code> 수정 (Users worktree에서)</a></h3>
+<p><code>// === DOMAIN ROUTES ===</code> 주석 아래에 추가:</p>
+<pre><code class="language-fsharp">          // === DOMAIN ROUTES ===
+          WorktreeApi.Users.Handlers.routes
+</code></pre>
+<h3 id="users-빌드-및-테스트"><a class="header" href="#users-빌드-및-테스트">Users 빌드 및 테스트</a></h3>
+<pre><code class="language-bash">$ cd src
+$ dotnet build
+&gt;&gt;&gt; Build succeeded.
+
+# 서버 실행
+$ dotnet run &amp;
+
+# User 생성
+$ curl -X POST http://localhost:5000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice","email":"alice@example.com","role":"admin"}'
+&gt;&gt;&gt; {"data":{"id":{"case":"UserId","fields":["..."]},"name":"Alice",...},"message":"OK","success":true}
+
+# 전체 조회
+$ curl http://localhost:5000/api/users
+&gt;&gt;&gt; {"data":[{"id":...,"name":"Alice",...}],"message":"OK","success":true}
+
+$ kill %1
+</code></pre>
+<h3 id="users-커밋"><a class="header" href="#users-커밋">Users 커밋</a></h3>
+<pre><code class="language-bash">$ git add -A
+$ git commit -m "feat: add Users module with CRUD endpoints"
+&gt;&gt;&gt; [feature/users def5678] feat: add Users module with CRUD endpoints
+&gt;&gt;&gt;  4 files changed, xxx insertions(+)
+</code></pre>
+<hr>
+<h2 id="step-4-products-모듈-개발-동시에"><a class="header" href="#step-4-products-모듈-개발-동시에">Step 4: Products 모듈 개발 (동시에!)</a></h2>
+<p><strong>Terminal 3</strong> (feature/products worktree)에서 <strong>동시에</strong> Products 모듈을 개발합니다.</p>
+<blockquote>
+<p>Claude Code에게: “Products 모듈을 만들어줘. src/Products/ 디렉토리에 Domain.fs와 Handlers.fs를 작성하고, .fsproj에 추가해줘.”</p>
+</blockquote>
+<h3 id="srcproductsdomainfs"><a class="header" href="#srcproductsdomainfs"><code>src/Products/Domain.fs</code></a></h3>
+<pre><code class="language-fsharp">namespace WorktreeApi.Products
+
+open System
+open System.Collections.Concurrent
+open WorktreeApi.Core
+
+module Domain =
+
+    type Product =
+        { Id: ProductId
+          Name: string
+          Description: string
+          Price: decimal
+          Stock: int
+          CreatedAt: DateTime }
+
+    type CreateProductRequest =
+        { Name: string
+          Description: string
+          Price: decimal
+          Stock: int }
+
+    type UpdateProductRequest =
+        { Name: string option
+          Description: string option
+          Price: decimal option
+          Stock: int option }
+
+    // === In-Memory Store ===
+    let private store = ConcurrentDictionary&lt;Guid, Product&gt;()
+
+    let create (req: CreateProductRequest) =
+        if req.Price &lt; 0m then
+            Error "Price must be non-negative"
+        elif req.Stock &lt; 0 then
+            Error "Stock must be non-negative"
+        else
+            let id = Guid.NewGuid()
+
+            let product =
+                { Id = ProductId id
+                  Name = req.Name
+                  Description = req.Description
+                  Price = req.Price
+                  Stock = req.Stock
+                  CreatedAt = DateTime.UtcNow }
+
+            store.[id] &lt;- product
+            Ok product
+
+    let getAll () = store.Values |&gt; Seq.toList
+
+    let getById (id: Guid) =
+        match store.TryGetValue(id) with
+        | true, product -&gt; Some product
+        | false, _ -&gt; None
+
+    let update (id: Guid) (req: UpdateProductRequest) =
+        match store.TryGetValue(id) with
+        | false, _ -&gt; Error "Product not found"
+        | true, product -&gt;
+            let updated =
+                { product with
+                    Name = req.Name |&gt; Option.defaultValue product.Name
+                    Description = req.Description |&gt; Option.defaultValue product.Description
+                    Price = req.Price |&gt; Option.defaultValue product.Price
+                    Stock = req.Stock |&gt; Option.defaultValue product.Stock }
+
+            store.[id] &lt;- updated
+            Ok updated
+
+    let delete (id: Guid) = store.TryRemove(id) |&gt; fst
+</code></pre>
+<h3 id="srcproductshandlersfs"><a class="header" href="#srcproductshandlersfs"><code>src/Products/Handlers.fs</code></a></h3>
+<pre><code class="language-fsharp">namespace WorktreeApi.Products
+
+open System
+open Microsoft.AspNetCore.Http
+open Giraffe
+open WorktreeApi.Core
+
+module Handlers =
+
+    let getAll: HttpHandler =
+        fun next ctx -&gt;
+            let products = Domain.getAll ()
+            json (ApiResponse.success products) next ctx
+
+    let getById (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            match Domain.getById id with
+            | Some product -&gt; json (ApiResponse.success product) next ctx
+            | None -&gt;
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "Product not found") next ctx
+
+    let create: HttpHandler =
+        fun next ctx -&gt;
+            task {
+                let! req = ctx.BindJsonAsync&lt;Domain.CreateProductRequest&gt;()
+
+                match Domain.create req with
+                | Ok product -&gt;
+                    ctx.SetStatusCode 201
+                    return! json (ApiResponse.success product) next ctx
+                | Error msg -&gt;
+                    ctx.SetStatusCode 400
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let update (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            task {
+                let! req = ctx.BindJsonAsync&lt;Domain.UpdateProductRequest&gt;()
+
+                match Domain.update id req with
+                | Ok product -&gt; return! json (ApiResponse.success product) next ctx
+                | Error msg -&gt;
+                    ctx.SetStatusCode 404
+                    return! json (ApiResponse.error msg) next ctx
+            }
+
+    let delete (id: Guid) : HttpHandler =
+        fun next ctx -&gt;
+            if Domain.delete id then
+                ctx.SetStatusCode 204
+                next ctx
+            else
+                ctx.SetStatusCode 404
+                json (ApiResponse.error "Product not found") next ctx
+
+    let routes: HttpHandler =
+        subRoute
+            "/api/products"
+            (choose
+                [ GET
+                  &gt;=&gt; choose [ routef "/%O" getById; route "" &gt;=&gt; getAll ]
+                  POST &gt;=&gt; route "" &gt;=&gt; create
+                  PUT &gt;=&gt; routef "/%O" update
+                  DELETE &gt;=&gt; routef "/%O" delete ])
+</code></pre>
+<h3 id="fsproj-수정-products-worktree에서"><a class="header" href="#fsproj-수정-products-worktree에서"><code>.fsproj</code> 수정 (Products worktree에서)</a></h3>
+<p><code>src/WorktreeApi.fsproj</code>의 <code>&lt;!-- Products module --&gt;</code> 주석을 다음으로 교체:</p>
+<pre><code class="language-xml">    &lt;!-- Products module --&gt;
+    &lt;Compile Include="Products/Domain.fs" /&gt;
+    &lt;Compile Include="Products/Handlers.fs" /&gt;
+</code></pre>
+<h3 id="programfs-수정-products-worktree에서"><a class="header" href="#programfs-수정-products-worktree에서"><code>Program.fs</code> 수정 (Products worktree에서)</a></h3>
+<p><code>// === DOMAIN ROUTES ===</code> 주석 아래에 추가:</p>
+<pre><code class="language-fsharp">          // === DOMAIN ROUTES ===
+          WorktreeApi.Products.Handlers.routes
+</code></pre>
+<h3 id="products-빌드-및-테스트"><a class="header" href="#products-빌드-및-테스트">Products 빌드 및 테스트</a></h3>
+<pre><code class="language-bash">$ cd src
+$ dotnet build
+&gt;&gt;&gt; Build succeeded.
+
+$ dotnet run &amp;
+
+# Product 생성
+$ curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Keyboard","description":"Mechanical","price":89.99,"stock":50}'
+&gt;&gt;&gt; {"data":{"id":...,"name":"Keyboard",...,"stock":50},"message":"OK","success":true}
+
+# 유효성 검사 테스트
+$ curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Bad","description":"Negative","price":-10,"stock":5}'
+&gt;&gt;&gt; {"data":null,"message":"Price must be non-negative","success":false}
+
+$ kill %1
+</code></pre>
+<h3 id="products-커밋"><a class="header" href="#products-커밋">Products 커밋</a></h3>
+<pre><code class="language-bash">$ git add -A
+$ git commit -m "feat: add Products module with CRUD endpoints"
+&gt;&gt;&gt; [feature/products 9ab0123] feat: add Products module with CRUD endpoints
+&gt;&gt;&gt;  4 files changed, xxx insertions(+)
+</code></pre>
+<hr>
+<h2 id="step-5-main으로-merge"><a class="header" href="#step-5-main으로-merge">Step 5: Main으로 Merge</a></h2>
+<p>두 worktree에서 모두 개발이 완료되었습니다. <strong>Terminal 1</strong> (main)에서 merge합니다.</p>
+<pre><code class="language-bash"># Terminal 1 — main worktree에서
+
+# 현재 브랜치 확인
+$ git branch
+&gt;&gt;&gt; * main
+&gt;&gt;&gt;   feature/products
+&gt;&gt;&gt;   feature/users
+
+# Users merge
+$ git merge feature/users
+&gt;&gt;&gt; Updating abc1234..def5678
+&gt;&gt;&gt; Fast-forward
+&gt;&gt;&gt;  src/Users/Domain.fs      | xxx +++
+&gt;&gt;&gt;  src/Users/Handlers.fs    | xxx +++
+&gt;&gt;&gt;  src/WorktreeApi.fsproj   |   2 ++
+&gt;&gt;&gt;  src/Program.fs           |   1 +
+&gt;&gt;&gt;  4 files changed, xxx insertions(+)
+</code></pre>
+<p>Users merge는 clean (fast-forward)입니다. main에 다른 변경이 없었으니까요.</p>
+<pre><code class="language-bash"># Products merge
+$ git merge feature/products
+&gt;&gt;&gt; Auto-merging src/Program.fs
+&gt;&gt;&gt; Auto-merging src/WorktreeApi.fsproj
+&gt;&gt;&gt; Merge made by the 'ort' strategy.
+&gt;&gt;&gt;  src/Products/Domain.fs    | xxx +++
+&gt;&gt;&gt;  src/Products/Handlers.fs  | xxx +++
+&gt;&gt;&gt;  src/WorktreeApi.fsproj    |   2 ++
+&gt;&gt;&gt;  src/Program.fs            |   1 +
+&gt;&gt;&gt;  4 files changed, xxx insertions(+)
+</code></pre>
+<blockquote>
+<p><strong>왜 Products merge에서 충돌이 발생하지 않았나?</strong></p>
+<p><code>.fsproj</code>에서 Users와 Products는 <strong>서로 다른 zone 주석 아래</strong>에 파일을 추가했습니다.
+<code>Program.fs</code>에서도 둘 다 <code>// === DOMAIN ROUTES ===</code> 주석 아래에 추가했지만,
+git의 3-way merge가 서로 다른 줄에 추가된 것을 인식해서 자동으로 merge합니다.</p>
+<p>만약 zone 주석 없이 같은 위치에 추가했다면 충돌이 발생했을 것입니다.
+<strong>이것이 <code>.fsproj</code>에 zone 주석을 넣는 이유입니다.</strong></p>
+</blockquote>
+<h3 id="최종-빌드-확인"><a class="header" href="#최종-빌드-확인">최종 빌드 확인</a></h3>
+<pre><code class="language-bash">$ cd src
+$ dotnet build
+&gt;&gt;&gt; Build succeeded.
+
+$ dotnet run &amp;
+
+# Users API 확인
+$ curl -X POST http://localhost:5000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Bob","email":"bob@example.com","role":"member"}'
+&gt;&gt;&gt; {"data":{...},"message":"OK","success":true}
+
+# Products API 확인
+$ curl -X POST http://localhost:5000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Mouse","description":"Wireless","price":29.99,"stock":100}'
+&gt;&gt;&gt; {"data":{...},"message":"OK","success":true}
+
+# Health check도 여전히 동작
+$ curl http://localhost:5000/health
+&gt;&gt;&gt; {"status":"healthy","timestamp":"..."}
+
+$ kill %1
+</code></pre>
+<p>두 모듈이 하나의 API에서 함께 동작합니다!</p>
+<h2 id="step-6-worktree-정리"><a class="header" href="#step-6-worktree-정리">Step 6: Worktree 정리</a></h2>
+<p>merge가 완료되었으므로 worktree를 정리합니다.</p>
+<pre><code class="language-bash"># worktree 제거
+$ git worktree remove ../worktree-tutorial-users
+&gt;&gt;&gt; Removing worktree '/path/to/worktree-tutorial-users'
+
+$ git worktree remove ../worktree-tutorial-products
+&gt;&gt;&gt; Removing worktree '/path/to/worktree-tutorial-products'
+
+# 브랜치 정리 (선택사항 — 이미 merge했으므로 안전)
+$ git branch -d feature/users
+&gt;&gt;&gt; Deleted branch feature/users (was def5678).
+
+$ git branch -d feature/products
+&gt;&gt;&gt; Deleted branch feature/products (was 9ab0123).
+
+# 확인
+$ git worktree list
+&gt;&gt;&gt; /path/to/worktree-tutorial  xyz9876 [main]
+</code></pre>
+<h2 id="효율성-비교"><a class="header" href="#효율성-비교">효율성 비교</a></h2>
+<h3 id="순차-개발-traditional"><a class="header" href="#순차-개발-traditional">순차 개발 (traditional)</a></h3>
+<pre><code>Users:    [████████████████] 20분
+Products: [████████████████] 20분
+Merge:    [██]               2분
+                              ─────
+                         총 42분
+</code></pre>
+<h3 id="병렬-개발-worktree"><a class="header" href="#병렬-개발-worktree">병렬 개발 (worktree)</a></h3>
+<pre><code>Users:    [████████████████] 20분
+Products: [████████████████] 20분  ← 동시 실행!
+Merge:    [██]               2분
+                              ─────
+                         총 22분 (48% 절감)
+</code></pre>
+<p>모듈이 3개, 4개로 늘어나면 절감 효과는 더 커집니다.</p>
+<blockquote>
+<p><strong>주의: Token 비용</strong></p>
+<p>Claude Code 세션을 병렬로 실행하면 token 사용량도 비례해서 증가합니다.
+2개의 세션 = 약 2배의 token. 효율성 향상과 비용 증가를 함께 고려하세요.
+독립적인 모듈이 3개 이상일 때 병렬 개발의 가치가 가장 큽니다.</p>
+</blockquote>
+<hr>
+<h2 id="연습-문제"><a class="header" href="#연습-문제">연습 문제</a></h2>
+<h3 id="challenge-1-포트-충돌"><a class="header" href="#challenge-1-포트-충돌">Challenge 1: 포트 충돌</a></h3>
+<p>두 worktree에서 동시에 <code>dotnet run</code>을 실행하면 어떻게 되나요?</p>
+<details>
+<summary>정답</summary>
+<p>포트 충돌이 발생합니다! 둘 다 기본 포트 5000을 사용하려 하기 때문입니다.</p>
+<p>해결 방법 — 각 worktree에서 다른 포트를 지정:</p>
+<pre><code class="language-bash"># Users worktree
+$ ASPNETCORE_URLS=http://localhost:5001 dotnet run
+
+# Products worktree
+$ ASPNETCORE_URLS=http://localhost:5002 dotnet run
+</code></pre>
+</details>
+<h3 id="challenge-2-worktree에서-다른-worktree의-commit-보기"><a class="header" href="#challenge-2-worktree에서-다른-worktree의-commit-보기">Challenge 2: worktree에서 다른 worktree의 commit 보기</a></h3>
+<p>Users worktree에서 commit한 후, Products worktree에서 <code>git log --all</code>을 실행하면 Users의 commit이 보이나요?</p>
+<details>
+<summary>정답</summary>
+<p><strong>보입니다.</strong> 모든 worktree는 같은 <code>.git</code> repository를 공유하므로, 한 worktree에서 만든 commit은 다른 worktree에서 <code>git log --all --oneline</code>로 확인할 수 있습니다.</p>
+<pre><code class="language-bash"># Products worktree에서
+$ git log --all --oneline
+&gt;&gt;&gt; def5678 (feature/users) feat: add Users module with CRUD endpoints
+&gt;&gt;&gt; abc1234 (HEAD -&gt; feature/products, main) feat: initialize F# Giraffe project
+</code></pre>
+</details>
+<h3 id="challenge-3-claude-worktree-시도"><a class="header" href="#challenge-3-claude-worktree-시도">Challenge 3: claude –worktree 시도</a></h3>
+<p>이번 챕터에서는 수동으로 worktree를 생성했습니다. 같은 작업을 <code>claude --worktree</code>로 해보세요.</p>
+<details>
+<summary>힌트</summary>
+<pre><code class="language-bash"># 프로젝트 루트에서
+$ claude --worktree feature-test
+
+# Claude Code가 자동으로:
+# 1. .claude/worktrees/feature-test/ 에 worktree 생성
+# 2. 새 브랜치에서 세션 시작
+#
+# 세션 종료 시 worktree 유지/삭제 선택 가능
+</code></pre>
+<p>수동 worktree와의 차이점:</p>
+<ul>
+<li>위치: <code>.claude/worktrees/</code> 내부 (repo 내부지만 Claude가 관리)</li>
+<li>브랜치명: 자동 생성</li>
+<li>lifecycle: 세션 종료 시 자동 정리 옵션</li>
+</ul>
+</details>
+<hr>
+<h2 id="다음-챕터"><a class="header" href="#다음-챕터">다음 챕터</a></h2>
+<p>Clean merge는 성공했습니다. 하지만 실제 개발에서는 <strong>충돌</strong>이 자주 발생합니다.
+다음 챕터에서는 <strong>의도적으로 충돌을 만들고</strong>, 해결하는 과정을 연습합니다. Orders 모듈도 추가합니다.</p>
+<p><a href="./03-merge-conflicts.html">Chapter 03: Merge Conflicts →</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="01-introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="03-merge-conflicts.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="01-introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="03-merge-conflicts.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

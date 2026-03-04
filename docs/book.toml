@@ -1,0 +1,18 @@
+[book]
+title = "Git Worktree Tutorial"
+authors = ["ohama"]
+language = "ko"
+description = "Git Worktree를 활용한 병렬 개발 실전 튜토리얼"
+src = "."
+
+[build]
+build-dir = "../docs"
+create-missing = false
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+
+[output.html.search]
+enable = true
+limit-results = 30
