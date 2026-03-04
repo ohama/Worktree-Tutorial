@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** worktree 병렬 개발이 순차 개발보다 얼마나 효율적인지 실제 코드와 함께 체감하게 만드는 것
-**Current focus:** Phase 2 — Parallel Modules
+**Current focus:** Phase 2 — Parallel Modules (COMPLETE)
 
 ## Current Position
 
 Phase: 2 of 5 (Parallel Modules)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-03-05 — Completed 02-02-PLAN.md (Products module + Products tests)
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-03-05 — Completed 02-03-PLAN.md (Tutorial chapter 02 JSON verification)
 
-Progress: [████░░░░░░] 37%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 2.3 min
-- Total execution time: 7 min
+- Total plans completed: 4
+- Average duration: 2.25 min
+- Total execution time: 9 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 1/1 | 2 min | 2 min |
-| 02-parallel-modules | 2/3 | 5 min | 2.5 min |
+| 02-parallel-modules | 3/3 | 7 min | 2.3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 02-01 (3 min), 02-02 (2 min)
+- Last 5 plans: 01-01 (2 min), 02-01 (3 min), 02-02 (2 min), 02-03 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -51,10 +51,13 @@ Recent decisions affecting current work:
 - [01-01]: TargetFramework is net10.0 (not net9.0) — only .NET 10.0.2 installed on this machine; tutorial should note readers on .NET 9 use net9.0
 - [01-01]: Hand-wrote .fsproj instead of using dotnet new giraffe template — avoids Views/Models/HttpHandlers template artifacts
 - [02-01]: FsharpFriendlySerializer requires PropertyNameCaseInsensitive=true — F# record fields are PascalCase but JSON requests use lowercase; constructor takes second JsonSerializerOptions parameter
-- [02-01]: Role DU serializes as {"Case":"Admin"} with JsonFSharpOptions.Default() — tutorial JSON output examples in chapter 02 need updating
+- [02-01]: Role DU serializes as {"Case":"Admin"} with JsonFSharpOptions.Default() — CONFIRMED by running API
 - [02-01]: Test project duplicates domain logic rather than ProjectReference — simpler build, acceptable for tutorial
 - [02-02]: Products validation checks Price first, then Stock — error messages are deterministic
 - [02-02]: Products module has NO dependency on Users module — only depends on WorktreeApi.Core
+- [02-03]: UserId/ProductId (single-case DUs) serialize as plain UUID strings — {"case":"UserId","fields":["..."]} format is INCORRECT
+- [02-03]: F# record fields in ApiResponse serialize as PascalCase (Data/Message/Success) — FsharpFriendlySerializer does not apply camelCase by default
+- [02-03]: Tutorial JSON output examples updated to reflect actual API behavior
 
 ### Pending Todos
 
@@ -68,6 +71,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-04T22:46:40Z
-Stopped at: Completed 02-02-PLAN.md — Products module + Products tests complete
+Last session: 2026-03-04T22:49:08Z
+Stopped at: Completed 02-03-PLAN.md — Phase 2 complete, tutorial chapter 02 verified
 Resume file: None
