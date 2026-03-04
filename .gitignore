@@ -1,0 +1,17 @@
+# .NET build output
+bin/
+obj/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Fantomas
+.fantomas-ignore
+
+# OS
+.DS_Store
+Thumbs.db
