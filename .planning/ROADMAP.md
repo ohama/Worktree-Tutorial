@@ -13,7 +13,7 @@ F# Giraffe REST API를 예제 코드베이스로 사용하여 Claude Code와 git
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** — 공유 코드베이스 scaffold + worktree 기초 설명 챕터
-- [ ] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
+- [x] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
 - [ ] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
 - [ ] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
 - [ ] **Phase 5: CI/CD Integration (Scenario 4)** — GitHub Actions per-module 병렬 빌드
@@ -48,9 +48,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Users CRUD module (USER-01 to USER-04) + Expecto test infrastructure (TEST-01, TEST-02)
-- [ ] 02-02-PLAN.md — Products CRUD module (PROD-01 to PROD-04) + Products tests (TEST-03)
-- [ ] 02-03-PLAN.md — Verify and correct tutorial chapter 02 JSON output examples (TUT1-03, TUT1-04, TUT1-05, TUTC-05)
+- [x] 02-01-PLAN.md — Users CRUD module (USER-01 to USER-04) + Expecto test infrastructure (TEST-01, TEST-02)
+- [x] 02-02-PLAN.md — Products CRUD module (PROD-01 to PROD-04) + Products tests (TEST-03)
+- [x] 02-03-PLAN.md — Verify and correct tutorial chapter 02 JSON output examples (TUT1-03, TUT1-04, TUT1-05, TUTC-05)
 
 ### Phase 3: Merge + Conflict Resolution (Scenario 2)
 **Goal**: 독자가 의도적 충돌 시나리오를 직접 해결하고 Orders 모듈을 통합해 3-모듈 API를 완성한다
@@ -101,7 +101,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | ✓ Complete | 2026-03-05 |
-| 2. Parallel Modules (Scenario 1) | 0/3 | Not started | - |
+| 2. Parallel Modules (Scenario 1) | 3/3 | ✓ Complete | 2026-03-05 |
 | 3. Merge + Conflict Resolution (Scenario 2) | 0/2 | Not started | - |
 | 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
 | 5. CI/CD Integration (Scenario 4) | 0/1 | Not started | - |

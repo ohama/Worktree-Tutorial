@@ -110,27 +110,27 @@
 | FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 1 | Complete |
 | FOUND-05 | Phase 1 | Complete |
-| USER-01 | Phase 2 | Pending |
-| USER-02 | Phase 2 | Pending |
-| USER-03 | Phase 2 | Pending |
-| USER-04 | Phase 2 | Pending |
-| PROD-01 | Phase 2 | Pending |
-| PROD-02 | Phase 2 | Pending |
-| PROD-03 | Phase 2 | Pending |
-| PROD-04 | Phase 2 | Pending |
+| USER-01 | Phase 2 | Complete |
+| USER-02 | Phase 2 | Complete |
+| USER-03 | Phase 2 | Complete |
+| USER-04 | Phase 2 | Complete |
+| PROD-01 | Phase 2 | Complete |
+| PROD-02 | Phase 2 | Complete |
+| PROD-03 | Phase 2 | Complete |
+| PROD-04 | Phase 2 | Complete |
 | ORDR-01 | Phase 3 | Pending |
 | ORDR-02 | Phase 3 | Pending |
 | ORDR-03 | Phase 3 | Pending |
 | ORDR-04 | Phase 3 | Pending |
-| TEST-01 | Phase 2 | Pending |
-| TEST-02 | Phase 2 | Pending |
-| TEST-03 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | Complete |
+| TEST-02 | Phase 2 | Complete |
+| TEST-03 | Phase 2 | Complete |
 | TEST-04 | Phase 3 | Pending |
 | TUT1-01 | Phase 1 | Complete |
 | TUT1-02 | Phase 1 | Complete |
-| TUT1-03 | Phase 2 | Pending |
-| TUT1-04 | Phase 2 | Pending |
-| TUT1-05 | Phase 2 | Pending |
+| TUT1-03 | Phase 2 | Complete |
+| TUT1-04 | Phase 2 | Complete |
+| TUT1-05 | Phase 2 | Complete |
 | TUT2-01 | Phase 3 | Pending |
 | TUT2-02 | Phase 3 | Pending |
 | TUT2-03 | Phase 3 | Pending |
@@ -145,7 +145,7 @@
 | TUTC-02 | Phase 1 | Complete |
 | TUTC-03 | Phase 1 | Complete |
 | TUTC-04 | Phase 4 | Pending |
-| TUTC-05 | Phase 2 | Pending |
+| TUTC-05 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 40 total

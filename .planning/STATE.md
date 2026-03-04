@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** worktree 병렬 개발이 순차 개발보다 얼마나 효율적인지 실제 코드와 함께 체감하게 만드는 것
-**Current focus:** Phase 2 — Parallel Modules (COMPLETE)
+**Current focus:** Phase 3 — Merge + Conflict Resolution
 
 ## Current Position
 
