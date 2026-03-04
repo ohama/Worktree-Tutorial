@@ -10,6 +10,8 @@
 
     <!-- === DOMAIN MODULES (independent — add in any order) === -->
     <!-- Users module -->
+    <Compile Include="Users/Domain.fs" />
+    <Compile Include="Users/Handlers.fs" />
     <!-- Products module -->
     <!-- Orders module -->
 
