@@ -10,28 +10,29 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 ## Current Position
 
 Phase: 2 of 5 (Parallel Modules)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-05 — Phase 1 complete, verified 7/7 must-haves
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-05 — Completed 02-01-PLAN.md (Users module + Expecto tests)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 26%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 2 min
-- Total execution time: 2 min
+- Total plans completed: 2
+- Average duration: 2.5 min
+- Total execution time: 5 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 1/1 | 2 min | 2 min |
+| 02-parallel-modules | 1/3 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min)
-- Trend: Establishing baseline
+- Last 5 plans: 01-01 (2 min), 02-01 (3 min)
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -49,6 +50,9 @@ Recent decisions affecting current work:
 - [Research]: Phase 5 (CI/CD) needs deeper research during planning — GitHub Actions matrix YAML for per-worktree builds
 - [01-01]: TargetFramework is net10.0 (not net9.0) — only .NET 10.0.2 installed on this machine; tutorial should note readers on .NET 9 use net9.0
 - [01-01]: Hand-wrote .fsproj instead of using dotnet new giraffe template — avoids Views/Models/HttpHandlers template artifacts
+- [02-01]: FsharpFriendlySerializer requires PropertyNameCaseInsensitive=true — F# record fields are PascalCase but JSON requests use lowercase; constructor takes second JsonSerializerOptions parameter
+- [02-01]: Role DU serializes as {"Case":"Admin"} with JsonFSharpOptions.Default() — tutorial JSON output examples in chapter 02 need updating
+- [02-01]: Test project duplicates domain logic rather than ProjectReference — simpler build, acceptable for tutorial
 
 ### Pending Todos
 
@@ -62,6 +66,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05
-Stopped at: Phase 1 complete — ready for Phase 2 planning
+Last session: 2026-03-05 22:41 UTC
+Stopped at: Completed 02-01-PLAN.md — Users module + Expecto tests complete
 Resume file: None
