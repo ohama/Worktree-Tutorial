@@ -2,7 +2,7 @@
 
 ## Documentation
 
-[Git Worktree Tutorial](docs/index.html)
+[Git Worktree Tutorial](https://ohama.github.io/Worktree-Tutorial/)
 
 Claude Code와 git worktree를 활용한 병렬 개발 패턴을 가르치는 실전 튜토리얼.
 F# REST API 프로젝트를 예제로 사용하여, 독립적인 도메인 모듈을 여러 worktree에서 동시에 개발하고 merge하는 전체 워크플로우를 다룹니다.
