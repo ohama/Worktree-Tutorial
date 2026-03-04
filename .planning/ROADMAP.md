@@ -61,11 +61,12 @@ Plans:
   2. Orders 모듈 Expecto 테스트가 `dotnet test`로 통과한다
   3. Core.fs 의도적 충돌 시나리오가 tutorial 챕터에 재현 가능한 형태로 문서화되어 있다
   4. merge conflict 해결 (Core.fs + Program.fs route composition) 과정이 step-by-step으로 문서화되어 있다
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Orders module (ORDR-01 to ORDR-04) + tests (TEST-04)
-- [ ] 03-02: Tutorial chapter 03 — Merge conflict scenario (TUT2-01 to TUT2-04)
+- [ ] 03-01-PLAN.md — Orders worktree: Core.fs OrderStatus + Orders module + .fsproj/Program.fs (ORDR-01 to ORDR-04)
+- [ ] 03-02-PLAN.md — Pagination worktree: Core.fs PaginatedResponse only (conflict setup)
+- [ ] 03-03-PLAN.md — Main: merge conflict trigger + resolve + OrdersTests + tutorial verification (TEST-04, TUT2-01 to TUT2-04)
 
 ### Phase 4: Hotfix Parallel (Scenario 3)
 **Goal**: 독자가 feature worktree 작업을 중단하지 않고 hotfix를 main에 적용하고 rebase하는 전체 흐름을 완수한다
@@ -102,6 +103,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | ✓ Complete | 2026-03-05 |
 | 2. Parallel Modules (Scenario 1) | 3/3 | ✓ Complete | 2026-03-05 |
-| 3. Merge + Conflict Resolution (Scenario 2) | 0/2 | Not started | - |
+| 3. Merge + Conflict Resolution (Scenario 2) | 0/3 | Not started | - |
 | 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
 | 5. CI/CD Integration (Scenario 4) | 0/1 | Not started | - |
