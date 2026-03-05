@@ -16,6 +16,8 @@
     <Compile Include="Products/Domain.fs" />
     <Compile Include="Products/Handlers.fs" />
     <!-- Orders module -->
+    <Compile Include="Orders/Domain.fs" />
+    <Compile Include="Orders/Handlers.fs" />
 
     <!-- === ENTRY POINT (compile last) === -->
     <Compile Include="Program.fs" />

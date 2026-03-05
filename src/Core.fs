@@ -9,6 +9,14 @@ module Core =
     type ProductId = ProductId of Guid
     type OrderId = OrderId of Guid
 
+    // === Order Status ===
+    type OrderStatus =
+        | Pending
+        | Confirmed
+        | Shipped
+        | Delivered
+        | Cancelled
+
     // === API Response Wrapper ===
     type ApiResponse<'T> =
         { Data: 'T option
