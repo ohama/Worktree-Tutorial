@@ -15,6 +15,14 @@ module Core =
           Message: string
           Success: bool }
 
+    // === Paginated Response ===
+    type PaginatedResponse<'T> =
+        { Data: 'T list
+          Page: int
+          PageSize: int
+          TotalCount: int
+          TotalPages: int }
+
     module ApiResponse =
         let success data =
             { Data = Some data
@@ -30,3 +38,11 @@ module Core =
             { Data = None
               Message = "No Content"
               Success = true }
+
+    module PaginatedResponse =
+        let create (items: 'T list) (page: int) (pageSize: int) (totalCount: int) =
+            { Data = items
+              Page = page
+              PageSize = pageSize
+              TotalCount = totalCount
+              TotalPages = (totalCount + pageSize - 1) / pageSize }
