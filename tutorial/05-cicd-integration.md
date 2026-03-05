@@ -1,242 +1,76 @@
 # Chapter 05: CI/CD Integration (Scenario 4)
 
-이 챕터에서는 worktree 기반 병렬 개발 워크플로우를 **GitHub Actions CI/CD**와 통합합니다. 각 도메인 모듈을 **matrix strategy로 병렬 빌드**하여 CI에서도 병렬성의 이점을 활용합니다.
+이 챕터에서는 worktree 기반 병렬 개발 워크플로우를 **GitHub Actions CI/CD**와 통합합니다. 각 도메인 모듈을 **matrix strategy로 병렬 테스트**하여 CI에서도 병렬성의 이점을 활용합니다.
 
 ## 목표
 
-- 모듈별 독립 빌드/테스트를 CI에서 병렬 실행
-- PR마다 변경된 모듈만 빌드 (선택적 실행)
+- 모듈별 독립 테스트를 CI에서 병렬 실행
+- PR마다 전체 테스트를 세 개의 job으로 분산
 - worktree branch push 시 자동 CI 트리거
+- CI 완료 후 worktree 메타데이터 자동 정리
 
 ---
 
 ## Step 1: 프로젝트 구조 확인
 
-현재 `src/` 디렉토리 구조:
+현재 프로젝트 구조:
 
 ```
-src/
-├── Core.fs
-├── Users/
-│   ├── Domain.fs
-│   └── Handlers.fs
-├── Products/
-│   ├── Domain.fs
-│   └── Handlers.fs
-├── Orders/
-│   ├── Domain.fs
-│   └── Handlers.fs
-├── Program.fs
-└── WorktreeApi.fsproj
+.
+├── src/
+│   ├── Core.fs
+│   ├── Users/
+│   │   ├── Domain.fs
+│   │   └── Handlers.fs
+│   ├── Products/
+│   │   ├── Domain.fs
+│   │   └── Handlers.fs
+│   ├── Orders/
+│   │   ├── Domain.fs
+│   │   └── Handlers.fs
+│   ├── Program.fs
+│   └── WorktreeApi.fsproj
+└── tests/
+    ├── UsersTests.fs
+    ├── ProductsTests.fs
+    ├── OrdersTests.fs
+    ├── TestMain.fs
+    └── WorktreeApi.Tests.fsproj
 ```
 
-모든 모듈이 하나의 `.fsproj`에 있으므로, 빌드는 프로젝트 단위로 수행됩니다. 하지만 **테스트**는 모듈별로 분리할 수 있습니다.
+모든 모듈이 하나의 `.fsproj`에 있으므로, 빌드는 프로젝트 단위로 수행됩니다. 하지만 **테스트**는 Expecto의 `--filter-test-list` 플래그를 사용해 모듈별로 분리할 수 있습니다.
 
-## Step 2: 테스트 프로젝트 설정
+---
 
-먼저 Expecto 테스트 프로젝트를 만듭니다.
+## Step 2: 테스트 실행 확인
+
+테스트 프로젝트는 Phase 2에서 이미 만들었습니다. 모듈별 테스트 실행을 확인해봅니다.
 
 ```bash
-# 테스트 프로젝트 생성
-$ dotnet new console -o tests --name WorktreeApi.Tests -lang F#
+# Users 모듈 테스트만 실행
+$ dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Users
+>>> [13:00:00 INF] EXPECTO? Running tests...
+>>> [13:00:00 INF] EXPECTO! 6 tests run in 00:00:00.xxx
+>>>               6 passed, 0 ignored, 0 failed, 0 errored.
 
-# Expecto 패키지 추가
-$ cd tests
-$ dotnet add package Expecto --version 10.2.3
+# Products 모듈 테스트만 실행
+$ dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Products
+>>> [13:00:00 INF] EXPECTO? Running tests...
+>>> [13:00:00 INF] EXPECTO! 5 tests run in 00:00:00.xxx
+>>>               5 passed, 0 ignored, 0 failed, 0 errored.
 
-# 메인 프로젝트 참조 추가
-$ dotnet add reference ../src/WorktreeApi.fsproj
-
-$ cd ..
-```
-
-### `tests/WorktreeApi.Tests.fsproj`
-
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <!-- === TEST FILES === -->
-    <Compile Include="UsersTests.fs" />
-    <Compile Include="ProductsTests.fs" />
-    <Compile Include="OrdersTests.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Expecto" Version="10.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="../src/WorktreeApi.fsproj" />
-  </ItemGroup>
-
-</Project>
-```
-
-### `tests/UsersTests.fs`
-
-```fsharp
-module WorktreeApi.Tests.Users
-
-open Expecto
-open WorktreeApi.Users.Domain
-
-let tests =
-    testList
-        "Users"
-        [ testCase "create user with valid role"
-          <| fun _ ->
-              let req =
-                  { Name = "Alice"
-                    Email = "alice@example.com"
-                    Role = "admin" }
-
-              let result = create req
-              Expect.isOk result "Should create user"
-
-          testCase "create user with invalid role"
-          <| fun _ ->
-              let req =
-                  { Name = "Bob"
-                    Email = "bob@example.com"
-                    Role = "superuser" }
-
-              let result = create req
-              Expect.isError result "Should reject invalid role"
-
-          testCase "get all users"
-          <| fun _ ->
-              let users = getAll ()
-              Expect.isNonEmpty users "Should have at least one user"
-
-          testCase "delete non-existent user"
-          <| fun _ ->
-              let id = System.Guid.NewGuid()
-              let result = delete id
-              Expect.isFalse result "Should return false for non-existent user" ]
-```
-
-### `tests/ProductsTests.fs`
-
-```fsharp
-module WorktreeApi.Tests.Products
-
-open Expecto
-open WorktreeApi.Products.Domain
-
-let tests =
-    testList
-        "Products"
-        [ testCase "create product with valid data"
-          <| fun _ ->
-              let req =
-                  { Name = "Keyboard"
-                    Description = "Mechanical"
-                    Price = 89.99m
-                    Stock = 50 }
-
-              let result = create req
-              Expect.isOk result "Should create product"
-
-          testCase "reject negative price"
-          <| fun _ ->
-              let req =
-                  { Name = "Bad"
-                    Description = "Negative"
-                    Price = -10m
-                    Stock = 5 }
-
-              let result = create req
-              Expect.isError result "Should reject negative price"
-
-          testCase "reject negative stock"
-          <| fun _ ->
-              let req =
-                  { Name = "Bad"
-                    Description = "Negative stock"
-                    Price = 10m
-                    Stock = -1 }
-
-              let result = create req
-              Expect.isError result "Should reject negative stock" ]
-```
-
-### `tests/OrdersTests.fs`
-
-```fsharp
-module WorktreeApi.Tests.Orders
-
-open Expecto
-open WorktreeApi.Orders.Domain
-
-let tests =
-    testList
-        "Orders"
-        [ testCase "create order with valid items"
-          <| fun _ ->
-              let userId = System.Guid.NewGuid().ToString()
-              let productId = System.Guid.NewGuid().ToString()
-
-              let req =
-                  { UserId = userId
-                    Items =
-                      [ { ProductId = productId
-                          Quantity = 2
-                          UnitPrice = 29.99m } ] }
-
-              let result = create req
-              Expect.isOk result "Should create order"
-
-          testCase "reject order with invalid user ID"
-          <| fun _ ->
-              let req =
-                  { UserId = "not-a-guid"
-                    Items =
-                      [ { ProductId = System.Guid.NewGuid().ToString()
-                          Quantity = 1
-                          UnitPrice = 10m } ] }
-
-              let result = create req
-              Expect.isError result "Should reject invalid user ID"
-
-          testCase "parse valid order status"
-          <| fun _ ->
-              Expect.isSome (parseStatus "confirmed") "Should parse 'confirmed'"
-              Expect.isSome (parseStatus "Shipped") "Should parse 'Shipped'"
-              Expect.isNone (parseStatus "invalid") "Should reject invalid status" ]
-```
-
-### `tests/Program.fs`
-
-```fsharp
-module WorktreeApi.Tests.Program
-
-open Expecto
-
-[<EntryPoint>]
-let main args =
-    testList
-        "All"
-        [ WorktreeApi.Tests.Users.tests
-          WorktreeApi.Tests.Products.tests
-          WorktreeApi.Tests.Orders.tests ]
-    |> runTestsWithCLIArgs [] args
-```
-
-### 테스트 실행 확인
-
-```bash
-$ cd tests && dotnet run
+# Orders 모듈 테스트만 실행
+$ dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Orders
 >>> [13:00:00 INF] EXPECTO? Running tests...
 >>> [13:00:00 INF] EXPECTO! 10 tests run in 00:00:00.xxx
 >>>               10 passed, 0 ignored, 0 failed, 0 errored.
+
+# 전체 테스트 (합계: 21개)
+$ dotnet run --project tests/WorktreeApi.Tests.fsproj
+>>> [13:00:00 INF] EXPECTO! 21 tests run — 21 passed, 0 ignored, 0 failed, 0 errored.
 ```
+
+`--filter-test-list Users`는 test list 이름에 "Users" 문자열이 포함된 테스트만 실행합니다. `tests/TestMain.fs`에서 `testList "Users" [...]`로 정의된 테스트가 여기에 해당합니다.
 
 ---
 
@@ -254,32 +88,28 @@ on:
     branches: [main]
 
 jobs:
-  # ─────────────────────────────────────────────
-  # Stage 1: Build (전체 프로젝트)
-  # ─────────────────────────────────────────────
+  # Stage 1: 전체 프로젝트 빌드
   build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET 9.0
+      - name: Setup .NET 10.0
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore src/WorktreeApi.fsproj
+        run: dotnet restore
 
       - name: Build
-        run: dotnet build src/WorktreeApi.fsproj --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Release
 
-  # ─────────────────────────────────────────────
-  # Stage 2: Test (모듈별 병렬)
-  # ─────────────────────────────────────────────
+  # Stage 2: 모듈별 병렬 테스트 (matrix strategy)
   test:
     runs-on: ubuntu-latest
-    needs: build   # build 성공 후 실행
+    needs: build
 
     strategy:
       matrix:
@@ -289,39 +119,51 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET 9.0
+      - name: Setup .NET 10.0
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 9.0.x
+          dotnet-version: '10.0.x'
 
       - name: Restore
         run: dotnet restore tests/WorktreeApi.Tests.fsproj
 
       - name: Run ${{ matrix.module }} tests
         run: |
-          dotnet run --project tests/WorktreeApi.Tests.fsproj -- \
-            --filter "${{ matrix.module }}"
+          dotnet run --project tests/WorktreeApi.Tests.fsproj \
+            -- --filter-test-list "${{ matrix.module }}"
 
-  # ─────────────────────────────────────────────
-  # Stage 3: Format check
-  # ─────────────────────────────────────────────
-  format:
+  # Stage 3: worktree 정리 (항상 실행)
+  cleanup:
     runs-on: ubuntu-latest
+    needs: [test]
+    if: always()   # 테스트 실패해도 정리 실행
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup .NET 9.0
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 9.0.x
-
-      - name: Restore tools
-        run: dotnet tool restore
-
-      - name: Check formatting
-        run: dotnet fantomas --check src/ tests/
+      - name: Prune stale worktree metadata
+        run: |
+          echo "Active worktrees before prune:"
+          git worktree list
+          git worktree prune -v
+          echo "Active worktrees after prune:"
+          git worktree list
 ```
+
+### YAML 라인별 설명
+
+| 항목 | 설명 |
+|------|------|
+| `on: push/pull_request` | CI 트리거 조건. `main` 브랜치에 push하거나 PR을 열면 워크플로우 실행 |
+| `needs: build` | test 잡은 build 잡이 성공해야 시작. 빌드 실패 시 테스트 불필요 |
+| `matrix.module: [Users, Products, Orders]` | 세 가지 값으로 test 잡을 세 개 병렬 생성. 코드 중복 없이 병렬화 달성 |
+| `fail-fast: false` | 한 모듈 테스트가 실패해도 나머지 모듈 테스트 계속 실행. 전체 실패 현황 파악 가능 |
+| `dotnet-version: '10.0.x'` | .NET 10 최신 패치 버전 설치. 프로젝트의 `<TargetFramework>net10.0</TargetFramework>`와 일치 |
+| `dotnet restore tests/...fsproj` | 각 job은 새 VM에서 실행됨. build job의 패키지가 공유되지 않으므로 restore 재실행 필요 |
+| `--filter-test-list "${{ matrix.module }}"` | Expecto CLI 플래그. test list 이름의 부분 문자열로 필터링. `Users` → `testList "Users" [...]` 실행 |
+| `needs: [test]` | cleanup은 test 잡이 끝난 후 실행 |
+| `if: always()` | test 실패해도 cleanup 실행 보장. 기본값은 의존 잡 실패 시 skip |
+| `git worktree prune -v` | stale 상태의 worktree 메타데이터 정리. CI 신규 클론에서는 no-op이나, CI가 직접 worktree를 생성하는 시나리오에서 필수 |
 
 ### Workflow 구조 설명
 
@@ -338,10 +180,10 @@ jobs:
     [test/Users] [test/Products] [test/Orders]    ← matrix 병렬 실행!
           │            │            │
           └────────────┼────────────┘
-                       │
+                       │ needs: [test]
               ┌────────▼────────┐
-              │    [format]     │                  ← build와 병렬 실행
-              │  코드 포맷 검사  │
+              │    [cleanup]    │    ← if: always() — 항상 실행
+              │  worktree 정리  │
               └─────────────────┘
 ```
 
@@ -373,7 +215,7 @@ $ git push -u origin feature/new-module
 # GitHub에서 PR 생성 → CI 자동 실행
 # - build job 실행
 # - Users/Products/Orders 테스트 병렬 실행
-# - format check 실행
+# - cleanup job 실행 (if: always())
 ```
 
 ### PR 상태 확인 (gh CLI)
@@ -381,41 +223,37 @@ $ git push -u origin feature/new-module
 ```bash
 # PR의 CI 상태 확인
 $ gh pr checks
->>> build       pass   5s   Build
->>> test/Users  pass   8s   Run Users tests
->>> test/Products pass 7s   Run Products tests
->>> test/Orders  pass  9s   Run Orders tests
->>> format      pass   3s   Check formatting
+>>> build            pass   5s   Build
+>>> test (Users)     pass   8s   Run Users tests
+>>> test (Products)  pass   7s   Run Products tests
+>>> test (Orders)    pass   9s   Run Orders tests
+>>> cleanup          pass   2s   Prune stale worktree metadata
 ```
 
 ---
 
-## Step 5: Worktree 정리 in CI (선택사항)
+## Step 5: CI에서 Worktree 정리가 필요한 이유
 
-CI 환경에서 worktree를 사용하는 경우 (예: E2E 테스트에서 여러 버전 비교), 정리가 필요합니다.
+`cleanup` 잡은 워크플로우의 3단계에 포함되어 있으며 `if: always()`로 항상 실행됩니다.
 
-### CI에서 worktree 정리 step
+**이 잡이 필요한 이유:**
 
-```yaml
-  cleanup:
-    runs-on: ubuntu-latest
-    needs: [test]
-    if: always()   # 테스트 실패해도 정리 실행
+CI 파이프라인이 단순한 빌드/테스트를 넘어 직접 worktree를 생성하는 시나리오 (예: E2E 테스트에서 여러 버전 동시 실행, 카나리 배포 준비)에서는 이전 실행의 worktree 메타데이터가 남아 충돌을 유발할 수 있습니다. `git worktree prune -v`는 실제 디렉토리가 사라진 stale worktree 항목만 정리합니다.
 
-    steps:
-      - uses: actions/checkout@v4
+**신규 CI 클론에서는 no-op입니다:**
 
-      - name: Cleanup worktrees
-        run: |
-          echo "Active worktrees:"
-          git worktree list
+```bash
+$ git worktree list
+/home/runner/work/project/project  abc1234 [main]   ← 메인 워크트리만 존재
 
-          # stale worktree 정리
-          git worktree prune -v
+$ git worktree prune -v
+# (출력 없음 — 정리할 항목 없음)
 
-          echo "After cleanup:"
-          git worktree list
+$ git worktree list
+/home/runner/work/project/project  abc1234 [main]   ← 변화 없음
 ```
+
+`if: always()`의 의미: 테스트 중 하나가 실패해도 cleanup은 반드시 실행됩니다. 기본 동작은 의존 잡이 실패하면 해당 잡을 skip하는 것이므로 명시적으로 지정해야 합니다.
 
 ---
 
@@ -423,12 +261,9 @@ CI 환경에서 worktree를 사용하는 경우 (예: E2E 테스트에서 여러
 
 ```bash
 # 프로젝트 루트에서
-$ mkdir -p .github/workflows
-# (위의 ci.yml 파일을 .github/workflows/ci.yml에 저장)
-
-$ git add -A
+$ git add .github/workflows/ci.yml
 $ git commit -m "ci: add GitHub Actions workflow with parallel module tests"
->>> [main ggg7777] ci: add GitHub Actions workflow with parallel module tests
+>>> [main abc1234] ci: add GitHub Actions workflow with parallel module tests
 ```
 
 ---
@@ -548,7 +383,7 @@ $ gh pr checks --watch
 | 02 Parallel Development | 병렬 worktree 개발, clean merge, Claude Code 병렬 세션 |
 | 03 Merge Conflicts | 의도적 충돌, conflict resolution, 공유 파일 관리 |
 | 04 Hotfix Parallel | 작업 중단 없는 hotfix, rebase 워크플로우 |
-| 05 CI/CD Integration | GitHub Actions matrix 빌드, 모듈별 병렬 테스트 |
+| 05 CI/CD Integration | GitHub Actions matrix 테스트, 모듈별 병렬 실행, cleanup |
 
 ## Quick Reference
 
@@ -577,6 +412,11 @@ ASPNETCORE_URLS=http://localhost:5002 dotnet run   # worktree 2
 # Terminal 1: cd ../project-main && claude
 # Terminal 2: cd ../project-users && claude
 # Terminal 3: cd ../project-products && claude
+
+# === 모듈별 테스트 실행 ===
+dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Users
+dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Products
+dotnet run --project tests/WorktreeApi.Tests.fsproj -- --filter-test-list Orders
 ```
 
 [← 처음으로 돌아가기](./README.md)
