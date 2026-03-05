@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
 - [x] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
 - [x] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
-- [ ] **Phase 5: CI/CD Integration (Scenario 4)** — GitHub Actions per-module 병렬 빌드
+- [x] **Phase 5: CI/CD Integration (Scenario 4)** — GitHub Actions per-module 병렬 빌드
 
 ## Phase Details
 
@@ -92,7 +92,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05-01-PLAN.md — GitHub Actions workflow + tutorial chapter 05 corrections (TUT4-01 to TUT4-03)
+- [x] 05-01-PLAN.md — GitHub Actions workflow + tutorial chapter 05 corrections (TUT4-01 to TUT4-03)
 
 ## Progress
 
@@ -105,4 +105,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Parallel Modules (Scenario 1) | 3/3 | ✓ Complete | 2026-03-05 |
 | 3. Merge + Conflict Resolution (Scenario 2) | 3/3 | ✓ Complete | 2026-03-05 |
 | 4. Hotfix Parallel (Scenario 3) | 1/1 | ✓ Complete | 2026-03-05 |
-| 5. CI/CD Integration (Scenario 4) | 0/1 | Not started | - |
+| 5. CI/CD Integration (Scenario 4) | 1/1 | ✓ Complete | 2026-03-05 |

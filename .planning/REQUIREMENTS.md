@@ -138,9 +138,9 @@
 | TUT3-01 | Phase 4 | Complete |
 | TUT3-02 | Phase 4 | Complete |
 | TUT3-03 | Phase 4 | Complete |
-| TUT4-01 | Phase 5 | Pending |
-| TUT4-02 | Phase 5 | Pending |
-| TUT4-03 | Phase 5 | Pending |
+| TUT4-01 | Phase 5 | Complete |
+| TUT4-02 | Phase 5 | Complete |
+| TUT4-03 | Phase 5 | Complete |
 | TUTC-01 | Phase 1 | Complete |
 | TUTC-02 | Phase 1 | Complete |
 | TUTC-03 | Phase 1 | Complete |
