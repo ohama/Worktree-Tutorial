@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-14d6f6a0.js";
+            window.path_to_searchindex_js = "searchindex-ec9e5e33.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ae7a719f.js"></script>
@@ -479,11 +479,10 @@ $ git commit -m "feat: add PaginatedResponse type for future pagination support"
 <p><strong>Terminal 1</strong> (main)에서 두 브랜치를 merge합니다.</p>
 <pre><code class="language-bash"># Orders 먼저 merge (clean)
 $ git merge feature/orders
-&gt;&gt;&gt; Updating xyz9876..aaa1111
-&gt;&gt;&gt; Fast-forward
+&gt;&gt;&gt; Merge made by the 'ort' strategy.
 &gt;&gt;&gt;  src/Core.fs              |  8 ++++
-&gt;&gt;&gt;  src/Orders/Domain.fs     | xxx +++
-&gt;&gt;&gt;  src/Orders/Handlers.fs   | xxx +++
+&gt;&gt;&gt;  src/Orders/Domain.fs     | 95 +++
+&gt;&gt;&gt;  src/Orders/Handlers.fs   | 66 +++
 &gt;&gt;&gt;  src/WorktreeApi.fsproj   |  2 ++
 &gt;&gt;&gt;  src/Program.fs           |  1 +
 
@@ -494,6 +493,9 @@ $ git merge feature/pagination
 &gt;&gt;&gt; Automatic merge failed; fix conflicts and then commit the result.
 </code></pre>
 <p><strong>충돌 발생!</strong> 두 브랜치 모두 <code>Core.fs</code>에서 ID 타입과 ApiResponse 사이에 새로운 타입을 추가했기 때문입니다.</p>
+<blockquote>
+<p><strong>참고</strong>: Git의 <code>ort</code> merge 전략은 경우에 따라 충돌을 자동으로 해결하기도 합니다. 충돌이 발생하지 않고 merge가 완료된다면, 두 브랜치에서 추가한 코드 위치를 겹치도록 조정하면 충돌을 재현할 수 있습니다. 이 튜토리얼에서는 충돌 상황을 교육 목적으로 설명합니다.</p>
+</blockquote>
 <h2 id="step-5-충돌-해결"><a class="header" href="#step-5-충돌-해결">Step 5: 충돌 해결</a></h2>
 <h3 id="충돌-상태-확인"><a class="header" href="#충돌-상태-확인">충돌 상태 확인</a></h3>
 <pre><code class="language-bash">$ git status
@@ -641,39 +643,68 @@ $ git commit -m "merge: resolve Core.fs conflict — keep both OrderStatus and P
 <h2 id="step-6-최종-확인"><a class="header" href="#step-6-최종-확인">Step 6: 최종 확인</a></h2>
 <pre><code class="language-bash">$ cd src &amp;&amp; dotnet run &amp;
 
-# Users API
+# Users API — 빈 배열 반환
 $ curl http://localhost:5000/api/users
-&gt;&gt;&gt; {"data":[],"message":"OK","success":true}
+&gt;&gt;&gt; {"Data":[],"Message":"OK","Success":true}
 
 # Products API
 $ curl http://localhost:5000/api/products
-&gt;&gt;&gt; {"data":[],"message":"OK","success":true}
+&gt;&gt;&gt; {"Data":[],"Message":"OK","Success":true}
 
-# Orders API — User와 Product 생성 후 주문
+# Orders API — 처음엔 빈 배열
+$ curl http://localhost:5000/api/orders
+&gt;&gt;&gt; {"Data":[],"Message":"OK","Success":true}
+
+# User 생성
 $ curl -X POST http://localhost:5000/api/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Alice","email":"alice@example.com","role":"admin"}'
-&gt;&gt;&gt; {"data":{"id":{"case":"UserId","fields":["USER-GUID-HERE"]},...},...}
+&gt;&gt;&gt; {"Data":{"Id":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Name":"Alice","Email":"alice@example.com","Role":{"Case":"Admin"},"CreatedAt":"2026-03-05T00:10:14.337157Z"},"Message":"OK","Success":true}
 
+# Product 생성
 $ curl -X POST http://localhost:5000/api/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Laptop","description":"MacBook Pro","price":2499.99,"stock":10}'
-&gt;&gt;&gt; {"data":{"id":{"case":"ProductId","fields":["PRODUCT-GUID-HERE"]},...},...}
+&gt;&gt;&gt; {"Data":{"Id":"4e5dc699-cc79-481a-bc47-a306ca164e70","Name":"Laptop","Description":"MacBook Pro","Price":2499.99,"Stock":10,"CreatedAt":"2026-03-05T00:10:14.362049Z"},"Message":"OK","Success":true}
 
-# Order 생성 (위에서 받은 GUID 사용)
+# Order 생성 (위에서 받은 Id 값을 사용)
 $ curl -X POST http://localhost:5000/api/orders \
   -H "Content-Type: application/json" \
-  -d '{"userId":"USER-GUID-HERE","items":[{"productId":"PRODUCT-GUID-HERE","quantity":1,"unitPrice":2499.99}]}'
-&gt;&gt;&gt; {"data":{"id":...,"status":{"case":"Pending"},"totalAmount":2499.99,...},...}
+  -d '{"userId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","items":[{"productId":"4e5dc699-cc79-481a-bc47-a306ca164e70","quantity":1,"unitPrice":2499.99}]}'
+&gt;&gt;&gt; {"Data":{"Id":"a3282b14-442e-4b22-a1c3-f9748f5f4430","UserId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Items":[{"ProductId":"4e5dc699-cc79-481a-bc47-a306ca164e70","Quantity":1,"UnitPrice":2499.99}],"Status":{"Case":"Pending"},"TotalAmount":2499.99,"CreatedAt":"2026-03-05T00:10:19.639801Z"},"Message":"OK","Success":true}
 
-# Order 상태 변경
-$ curl -X PATCH http://localhost:5000/api/orders/ORDER-GUID-HERE \
+# HTTP 상태코드: 201 Created
+
+# Order 상태 변경 (Pending → Confirmed)
+$ curl -X PATCH http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430 \
   -H "Content-Type: application/json" \
   -d '{"status":"confirmed"}'
-&gt;&gt;&gt; {"data":{...,"status":{"case":"Confirmed"},...},...}
+&gt;&gt;&gt; {"Data":{"Id":"a3282b14-442e-4b22-a1c3-f9748f5f4430","UserId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Items":[{"ProductId":"4e5dc699-cc79-481a-bc47-a306ca164e70","Quantity":1,"UnitPrice":2499.99}],"Status":{"Case":"Confirmed"},"TotalAmount":2499.99,"CreatedAt":"2026-03-05T00:10:19.639801Z"},"Message":"OK","Success":true}
+
+# 잘못된 status → 400 Bad Request
+$ curl -X PATCH http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430 \
+  -H "Content-Type: application/json" \
+  -d '{"status":"INVALID"}'
+&gt;&gt;&gt; HTTP 400
+
+# Order 삭제 → 204 No Content
+$ curl -X DELETE http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430
+&gt;&gt;&gt; HTTP 204
+
+# 없는 Order 삭제 → 404 Not Found
+$ curl -X DELETE http://localhost:5000/api/orders/00000000-0000-0000-0000-000000000000
+&gt;&gt;&gt; HTTP 404
 
 $ kill %1
 </code></pre>
+<blockquote>
+<p><strong>직렬화 동작 참고</strong>:</p>
+<ul>
+<li><code>UserId</code>, <code>ProductId</code>, <code>OrderId</code> (single-case DU): 평범한 UUID 문자열로 직렬화 (<code>"Id":"0f10714e-..."</code>)</li>
+<li><code>OrderStatus</code>, <code>Role</code> (fieldless DU): <code>{"Case":"Pending"}</code> 형태로 직렬화</li>
+<li><code>ApiResponse</code> 필드: PascalCase (<code>Data</code>, <code>Message</code>, <code>Success</code>)</li>
+</ul>
+</blockquote>
 <p>3개 모듈이 모두 동작합니다!</p>
 <h2 id="step-7-worktree-정리"><a class="header" href="#step-7-worktree-정리">Step 7: Worktree 정리</a></h2>
 <pre><code class="language-bash">$ git worktree remove ../worktree-tutorial-orders
