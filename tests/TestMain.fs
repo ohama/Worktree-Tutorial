@@ -8,5 +8,6 @@ let main args =
         testList "All" [
             UsersTests.userDomainTests
             ProductsTests.productDomainTests
+            OrdersTests.ordersDomainTests
         ]
     runTestsWithCLIArgs [] args all

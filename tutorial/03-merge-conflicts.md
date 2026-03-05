@@ -351,11 +351,10 @@ $ git commit -m "feat: add PaginatedResponse type for future pagination support"
 ```bash
 # Orders 먼저 merge (clean)
 $ git merge feature/orders
->>> Updating xyz9876..aaa1111
->>> Fast-forward
+>>> Merge made by the 'ort' strategy.
 >>>  src/Core.fs              |  8 ++++
->>>  src/Orders/Domain.fs     | xxx +++
->>>  src/Orders/Handlers.fs   | xxx +++
+>>>  src/Orders/Domain.fs     | 95 +++
+>>>  src/Orders/Handlers.fs   | 66 +++
 >>>  src/WorktreeApi.fsproj   |  2 ++
 >>>  src/Program.fs           |  1 +
 
@@ -367,6 +366,8 @@ $ git merge feature/pagination
 ```
 
 **충돌 발생!** 두 브랜치 모두 `Core.fs`에서 ID 타입과 ApiResponse 사이에 새로운 타입을 추가했기 때문입니다.
+
+> **참고**: Git의 `ort` merge 전략은 경우에 따라 충돌을 자동으로 해결하기도 합니다. 충돌이 발생하지 않고 merge가 완료된다면, 두 브랜치에서 추가한 코드 위치를 겹치도록 조정하면 충돌을 재현할 수 있습니다. 이 튜토리얼에서는 충돌 상황을 교육 목적으로 설명합니다.
 
 ## Step 5: 충돌 해결
 
@@ -540,39 +541,65 @@ $ git commit -m "merge: resolve Core.fs conflict — keep both OrderStatus and P
 ```bash
 $ cd src && dotnet run &
 
-# Users API
+# Users API — 빈 배열 반환
 $ curl http://localhost:5000/api/users
->>> {"data":[],"message":"OK","success":true}
+>>> {"Data":[],"Message":"OK","Success":true}
 
 # Products API
 $ curl http://localhost:5000/api/products
->>> {"data":[],"message":"OK","success":true}
+>>> {"Data":[],"Message":"OK","Success":true}
 
-# Orders API — User와 Product 생성 후 주문
+# Orders API — 처음엔 빈 배열
+$ curl http://localhost:5000/api/orders
+>>> {"Data":[],"Message":"OK","Success":true}
+
+# User 생성
 $ curl -X POST http://localhost:5000/api/users \
   -H "Content-Type: application/json" \
   -d '{"name":"Alice","email":"alice@example.com","role":"admin"}'
->>> {"data":{"id":{"case":"UserId","fields":["USER-GUID-HERE"]},...},...}
+>>> {"Data":{"Id":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Name":"Alice","Email":"alice@example.com","Role":{"Case":"Admin"},"CreatedAt":"2026-03-05T00:10:14.337157Z"},"Message":"OK","Success":true}
 
+# Product 생성
 $ curl -X POST http://localhost:5000/api/products \
   -H "Content-Type: application/json" \
   -d '{"name":"Laptop","description":"MacBook Pro","price":2499.99,"stock":10}'
->>> {"data":{"id":{"case":"ProductId","fields":["PRODUCT-GUID-HERE"]},...},...}
+>>> {"Data":{"Id":"4e5dc699-cc79-481a-bc47-a306ca164e70","Name":"Laptop","Description":"MacBook Pro","Price":2499.99,"Stock":10,"CreatedAt":"2026-03-05T00:10:14.362049Z"},"Message":"OK","Success":true}
 
-# Order 생성 (위에서 받은 GUID 사용)
+# Order 생성 (위에서 받은 Id 값을 사용)
 $ curl -X POST http://localhost:5000/api/orders \
   -H "Content-Type: application/json" \
-  -d '{"userId":"USER-GUID-HERE","items":[{"productId":"PRODUCT-GUID-HERE","quantity":1,"unitPrice":2499.99}]}'
->>> {"data":{"id":...,"status":{"case":"Pending"},"totalAmount":2499.99,...},...}
+  -d '{"userId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","items":[{"productId":"4e5dc699-cc79-481a-bc47-a306ca164e70","quantity":1,"unitPrice":2499.99}]}'
+>>> {"Data":{"Id":"a3282b14-442e-4b22-a1c3-f9748f5f4430","UserId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Items":[{"ProductId":"4e5dc699-cc79-481a-bc47-a306ca164e70","Quantity":1,"UnitPrice":2499.99}],"Status":{"Case":"Pending"},"TotalAmount":2499.99,"CreatedAt":"2026-03-05T00:10:19.639801Z"},"Message":"OK","Success":true}
 
-# Order 상태 변경
-$ curl -X PATCH http://localhost:5000/api/orders/ORDER-GUID-HERE \
+# HTTP 상태코드: 201 Created
+
+# Order 상태 변경 (Pending → Confirmed)
+$ curl -X PATCH http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430 \
   -H "Content-Type: application/json" \
   -d '{"status":"confirmed"}'
->>> {"data":{...,"status":{"case":"Confirmed"},...},...}
+>>> {"Data":{"Id":"a3282b14-442e-4b22-a1c3-f9748f5f4430","UserId":"0f10714e-5667-4fd6-90cf-fee7e7f79a92","Items":[{"ProductId":"4e5dc699-cc79-481a-bc47-a306ca164e70","Quantity":1,"UnitPrice":2499.99}],"Status":{"Case":"Confirmed"},"TotalAmount":2499.99,"CreatedAt":"2026-03-05T00:10:19.639801Z"},"Message":"OK","Success":true}
+
+# 잘못된 status → 400 Bad Request
+$ curl -X PATCH http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430 \
+  -H "Content-Type: application/json" \
+  -d '{"status":"INVALID"}'
+>>> HTTP 400
+
+# Order 삭제 → 204 No Content
+$ curl -X DELETE http://localhost:5000/api/orders/a3282b14-442e-4b22-a1c3-f9748f5f4430
+>>> HTTP 204
+
+# 없는 Order 삭제 → 404 Not Found
+$ curl -X DELETE http://localhost:5000/api/orders/00000000-0000-0000-0000-000000000000
+>>> HTTP 404
 
 $ kill %1
 ```
+
+> **직렬화 동작 참고**:
+> - `UserId`, `ProductId`, `OrderId` (single-case DU): 평범한 UUID 문자열로 직렬화 (`"Id":"0f10714e-..."`)
+> - `OrderStatus`, `Role` (fieldless DU): `{"Case":"Pending"}` 형태로 직렬화
+> - `ApiResponse` 필드: PascalCase (`Data`, `Message`, `Success`)
 
 3개 모듈이 모두 동작합니다!
 
