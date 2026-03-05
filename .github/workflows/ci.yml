@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Stage 1: 전체 프로젝트 빌드
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+  # Stage 2: 모듈별 병렬 테스트 (matrix strategy)
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    strategy:
+      matrix:
+        module: [Users, Products, Orders]
+      fail-fast: false   # 하나가 실패해도 나머지 계속 실행
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore tests/WorktreeApi.Tests.fsproj
+
+      - name: Run ${{ matrix.module }} tests
+        run: |
+          dotnet run --project tests/WorktreeApi.Tests.fsproj \
+            -- --filter-test-list "${{ matrix.module }}"
+
+  # Stage 3: worktree 정리 (항상 실행)
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always()   # 테스트 실패해도 정리 실행
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prune stale worktree metadata
+        run: |
+          echo "Active worktrees before prune:"
+          git worktree list
+          git worktree prune -v
+          echo "Active worktrees after prune:"
+          git worktree list
