@@ -12,16 +12,16 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 Phase: 3 of 5 (Merge + Conflict Resolution)
 Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-05 — Completed 03-02-PLAN.md (Pagination worktree with PaginatedResponse)
+Last activity: 2026-03-05 — Completed 03-01-PLAN.md (Orders worktree with OrderStatus DU) and 03-02-PLAN.md (Pagination worktree with PaginatedResponse)
 
 Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 6
 - Average duration: 1.8 min
-- Total execution time: 10 min
+- Total execution time: 14 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 01-foundation | 1/1 | 2 min | 2 min |
 | 02-parallel-modules | 3/3 | 7 min | 2.3 min |
-| 03-merge-conflict-resolution | 2/3 | 1 min | <1 min |
+| 03-merge-conflict-resolution | 2/3 | 5 min | 2.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3 min), 02-02 (2 min), 02-03 (2 min), 03-01 (?), 03-02 (1 min)
+- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (4 min), 03-02 (1 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -59,6 +59,8 @@ Recent decisions affecting current work:
 - [02-03]: UserId/ProductId (single-case DUs) serialize as plain UUID strings — {"case":"UserId","fields":["..."]} format is INCORRECT
 - [02-03]: F# record fields in ApiResponse serialize as PascalCase (Data/Message/Success) — FsharpFriendlySerializer does not apply camelCase by default
 - [02-03]: Tutorial JSON output examples updated to reflect actual API behavior
+- [03-01]: OrderStatus DU placed between ID types and ApiResponse in Core.fs on feature/orders — exact position creates 3-way merge conflict when Plan 03-03 merges Pagination branch
+- [03-01]: F# type inference requires explicit `OrderItem list` annotation when two record types share field names (OrderItem vs CreateOrderItemRequest)
 - [03-02]: feature/pagination branches from same base (7a404a5) as feature/orders — both modify Core.fs independently to create the 3-way merge conflict scenario in Plan 03-03
 
 ### Pending Todos
@@ -73,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05T00:04:36Z
-Stopped at: Completed 03-02-PLAN.md — feature/pagination branch created with PaginatedResponse type
+Last session: 2026-03-05T00:07:30Z
+Stopped at: Completed 03-01-PLAN.md — feature/orders branch created with Orders module and OrderStatus DU
 Resume file: None
