@@ -135,16 +135,16 @@
 | TUT2-02 | Phase 3 | Complete |
 | TUT2-03 | Phase 3 | Complete |
 | TUT2-04 | Phase 3 | Complete |
-| TUT3-01 | Phase 4 | Pending |
-| TUT3-02 | Phase 4 | Pending |
-| TUT3-03 | Phase 4 | Pending |
+| TUT3-01 | Phase 4 | Complete |
+| TUT3-02 | Phase 4 | Complete |
+| TUT3-03 | Phase 4 | Complete |
 | TUT4-01 | Phase 5 | Pending |
 | TUT4-02 | Phase 5 | Pending |
 | TUT4-03 | Phase 5 | Pending |
 | TUTC-01 | Phase 1 | Complete |
 | TUTC-02 | Phase 1 | Complete |
 | TUTC-03 | Phase 1 | Complete |
-| TUTC-04 | Phase 4 | Pending |
+| TUTC-04 | Phase 4 | Complete |
 | TUTC-05 | Phase 2 | Complete |
 
 **Coverage:**

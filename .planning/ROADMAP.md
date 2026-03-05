@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** — 공유 코드베이스 scaffold + worktree 기초 설명 챕터
 - [x] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
 - [x] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
-- [ ] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
+- [x] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
 - [ ] **Phase 5: CI/CD Integration (Scenario 4)** — GitHub Actions per-module 병렬 빌드
 
 ## Phase Details
@@ -79,7 +79,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 04-01-PLAN.md — Hotfix parallel workflow: create worktrees, apply hotfix, merge, rebase feature, cleanup lifecycle (TUT3-01 to TUT3-03, TUTC-04)
+- [x] 04-01-PLAN.md — Hotfix parallel workflow: create worktrees, apply hotfix, merge, rebase feature, cleanup lifecycle (TUT3-01 to TUT3-03, TUTC-04)
 
 ### Phase 5: CI/CD Integration (Scenario 4)
 **Goal**: 독자가 GitHub Actions matrix strategy로 per-module 병렬 빌드를 실제 CI 환경에서 동작시킬 수 있다
@@ -104,5 +104,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 1/1 | ✓ Complete | 2026-03-05 |
 | 2. Parallel Modules (Scenario 1) | 3/3 | ✓ Complete | 2026-03-05 |
 | 3. Merge + Conflict Resolution (Scenario 2) | 3/3 | ✓ Complete | 2026-03-05 |
-| 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
+| 4. Hotfix Parallel (Scenario 3) | 1/1 | ✓ Complete | 2026-03-05 |
 | 5. CI/CD Integration (Scenario 4) | 0/1 | Not started | - |
