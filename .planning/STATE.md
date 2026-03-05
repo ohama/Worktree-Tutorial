@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** worktree 병렬 개발이 순차 개발보다 얼마나 효율적인지 실제 코드와 함께 체감하게 만드는 것
-**Current focus:** Phase 3 — Merge + Conflict Resolution
+**Current focus:** Phase 4 — Hotfix Parallel (next)
 
 ## Current Position
 
-Phase: 3 of 5 (Merge + Conflict Resolution)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-03-05 — Completed 03-01-PLAN.md (Orders worktree with OrderStatus DU) and 03-02-PLAN.md (Pagination worktree with PaginatedResponse)
+Phase: 3 of 5 (Merge + Conflict Resolution) — COMPLETE
+Plan: 3 of 3 in current phase
+Status: Phase complete
+Last activity: 2026-03-05 — Completed 03-03-PLAN.md (merge resolution + OrdersTests + tutorial verification)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: 1.8 min
-- Total execution time: 14 min
+- Total plans completed: 7
+- Average duration: 2.0 min
+- Total execution time: 17 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 01-foundation | 1/1 | 2 min | 2 min |
 | 02-parallel-modules | 3/3 | 7 min | 2.3 min |
-| 03-merge-conflict-resolution | 2/3 | 5 min | 2.5 min |
+| 03-merge-conflict-resolution | 3/3 | 8 min | 2.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2 min), 02-03 (2 min), 03-01 (4 min), 03-02 (1 min)
+- Last 5 plans: 02-03 (2 min), 03-01 (4 min), 03-02 (1 min), 03-03 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -62,6 +62,8 @@ Recent decisions affecting current work:
 - [03-01]: OrderStatus DU placed between ID types and ApiResponse in Core.fs on feature/orders — exact position creates 3-way merge conflict when Plan 03-03 merges Pagination branch
 - [03-01]: F# type inference requires explicit `OrderItem list` annotation when two record types share field names (OrderItem vs CreateOrderItemRequest)
 - [03-02]: feature/pagination branches from same base (7a404a5) as feature/orders — both modify Core.fs independently to create the 3-way merge conflict scenario in Plan 03-03
+- [03-03]: Git ort strategy auto-merged Core.fs without conflict markers — non-overlapping insertions resolved cleanly; tutorial updated with explanatory note
+- [03-03]: OrderStatus fieldless DU serializes as {"Case":"Pending"} — confirmed by live server verification in Phase 3 final plan
 
 ### Pending Todos
 
@@ -75,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05T00:07:30Z
-Stopped at: Completed 03-01-PLAN.md — feature/orders branch created with Orders module and OrderStatus DU
+Last session: 2026-03-05T00:11:53Z
+Stopped at: Completed 03-03-PLAN.md — merge resolution, OrdersTests, tutorial verified; Phase 3 complete
 Resume file: None
