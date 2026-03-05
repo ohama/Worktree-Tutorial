@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-03-04)
 
 **Core value:** worktree 병렬 개발이 순차 개발보다 얼마나 효율적인지 실제 코드와 함께 체감하게 만드는 것
-**Current focus:** Phase 4 — Hotfix Parallel (next)
+**Current focus:** Phase 4 — Hotfix Parallel (complete)
 
 ## Current Position
 
-Phase: 3 of 5 (Merge + Conflict Resolution) — COMPLETE
-Plan: 3 of 3 in current phase
+Phase: 4 of 5 (Hotfix Parallel) — COMPLETE
+Plan: 1 of 1 in current phase
 Status: Phase complete
-Last activity: 2026-03-05 — Completed 03-03-PLAN.md (merge resolution + OrdersTests + tutorial verification)
+Last activity: 2026-03-05 — Completed 04-01-PLAN.md (hotfix workflow + worktree lifecycle)
 
-Progress: [██████░░░░] 60%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 2.0 min
-- Total execution time: 17 min
+- Total execution time: 22 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [██████░░░░] 60%
 | 01-foundation | 1/1 | 2 min | 2 min |
 | 02-parallel-modules | 3/3 | 7 min | 2.3 min |
 | 03-merge-conflict-resolution | 3/3 | 8 min | 2.7 min |
+| 04-hotfix-parallel | 1/1 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (2 min), 03-01 (4 min), 03-02 (1 min), 03-03 (3 min)
+- Last 5 plans: 03-01 (4 min), 03-02 (1 min), 03-03 (3 min), 04-01 (5 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - [03-02]: feature/pagination branches from same base (7a404a5) as feature/orders — both modify Core.fs independently to create the 3-way merge conflict scenario in Plan 03-03
 - [03-03]: Git ort strategy auto-merged Core.fs without conflict markers — non-overlapping insertions resolved cleanly; tutorial updated with explanatory note
 - [03-03]: OrderStatus fieldless DU serializes as {"Case":"Pending"} — confirmed by live server verification in Phase 3 final plan
+- [04-01]: feature/search and hotfix/users-delete-404 modified different files (Core.fs vs Handlers.fs) — rebase completed with zero conflicts; validates tutorial's "different files = no conflict" claim
+- [04-01]: hotfix merge was clean fast-forward — hotfix branched directly from main HEAD with no intervening commits
+- [04-01]: feature/search force-deleted (git branch -D) since it was never merged to main — intentional unfinished demo branch
 
 ### Pending Todos
 
@@ -77,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-05T00:11:53Z
-Stopped at: Completed 03-03-PLAN.md — merge resolution, OrdersTests, tutorial verified; Phase 3 complete
+Last session: 2026-03-05T00:38:00Z
+Stopped at: Completed 04-01-PLAN.md — hotfix workflow, worktree lifecycle, tutorial verified; Phase 4 complete
 Resume file: None
