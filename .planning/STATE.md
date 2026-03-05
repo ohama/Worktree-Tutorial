@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-03-04)
 
 ## Current Position
 
-Phase: 4 of 5 (Hotfix Parallel) — COMPLETE
+Phase: 5 of 5 (CI/CD Integration) — COMPLETE
 Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-03-05 — Completed 04-01-PLAN.md (hotfix workflow + worktree lifecycle)
+Status: All phases complete
+Last activity: 2026-03-05 — Completed 05-01-PLAN.md (GitHub Actions CI + tutorial chapter 05 fix)
 
-Progress: [████████░░] 80%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -31,9 +31,10 @@ Progress: [████████░░] 80%
 | 02-parallel-modules | 3/3 | 7 min | 2.3 min |
 | 03-merge-conflict-resolution | 3/3 | 8 min | 2.7 min |
 | 04-hotfix-parallel | 1/1 | 5 min | 5 min |
+| 05-cicd-integration | 1/1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (4 min), 03-02 (1 min), 03-03 (3 min), 04-01 (5 min)
+- Last 5 plans: 03-01 (4 min), 03-02 (1 min), 03-03 (3 min), 04-01 (5 min), 05-01 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -67,7 +68,10 @@ Recent decisions affecting current work:
 - [03-03]: OrderStatus fieldless DU serializes as {"Case":"Pending"} — confirmed by live server verification in Phase 3 final plan
 - [04-01]: feature/search and hotfix/users-delete-404 modified different files (Core.fs vs Handlers.fs) — rebase completed with zero conflicts; validates tutorial's "different files = no conflict" claim
 - [04-01]: hotfix merge was clean fast-forward — hotfix branched directly from main HEAD with no intervening commits
-- [04-01]: feature/search force-deleted (git branch -D) since it was never merged to main — intentional unfinished demo branch
+- [04-01]: feature/search force-deleted (git branch -D) since it was never merged to main
+- [05-01]: Use --filter-test-list (not --filter) for Expecto module filtering — --filter uses slash-separated hierarchy path, --filter-test-list matches test list names
+- [05-01]: No fantomas job in CI — fantomas not configured in project; workflow focused on matrix parallelism teaching goal
+- [05-01]: cleanup job uses if: always() — default GitHub Actions behavior skips dependent jobs on failure; explicit always() needed — intentional unfinished demo branch
 
 ### Pending Todos
 
@@ -75,12 +79,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- [Phase 5]: GitHub Actions matrix strategy for per-worktree builds needs verification during phase planning — research flagged this as niche
-- [General]: `claude --worktree` exact flag syntax should be verified against live Claude Code CLI before tutorial authoring (CLI flags can change)
-- [01-01]: Tutorial references net9.0 but repo uses net10.0 — plan 01-02 (tutorial) should document this discrepancy for readers
+None — all phases complete.
 
 ## Session Continuity
 
-Last session: 2026-03-05T00:38:00Z
-Stopped at: Completed 04-01-PLAN.md — hotfix workflow, worktree lifecycle, tutorial verified; Phase 4 complete
+Last session: 2026-03-05T00:55:00Z
+Stopped at: Completed 05-01-PLAN.md — GitHub Actions CI workflow + tutorial chapter 05 fix; Phase 5 complete; ALL PHASES DONE
 Resume file: None
