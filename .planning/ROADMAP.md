@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** — 공유 코드베이스 scaffold + worktree 기초 설명 챕터
 - [x] **Phase 2: Parallel Modules (Scenario 1)** — Users/Products 병렬 개발 + clean merge happy path
-- [ ] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
+- [x] **Phase 3: Merge + Conflict Resolution (Scenario 2)** — Orders 모듈 + 의도적 충돌 해결 시나리오
 - [ ] **Phase 4: Hotfix Parallel (Scenario 3)** — feature 작업 중단 없는 hotfix 병행 시나리오
 - [ ] **Phase 5: CI/CD Integration (Scenario 4)** — GitHub Actions per-module 병렬 빌드
 
@@ -64,9 +64,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Orders worktree: Core.fs OrderStatus + Orders module + .fsproj/Program.fs (ORDR-01 to ORDR-04)
-- [ ] 03-02-PLAN.md — Pagination worktree: Core.fs PaginatedResponse only (conflict setup)
-- [ ] 03-03-PLAN.md — Main: merge conflict trigger + resolve + OrdersTests + tutorial verification (TEST-04, TUT2-01 to TUT2-04)
+- [x] 03-01-PLAN.md — Orders worktree: Core.fs OrderStatus + Orders module + .fsproj/Program.fs (ORDR-01 to ORDR-04)
+- [x] 03-02-PLAN.md — Pagination worktree: Core.fs PaginatedResponse only (conflict setup)
+- [x] 03-03-PLAN.md — Main: merge conflict trigger + resolve + OrdersTests + tutorial verification (TEST-04, TUT2-01 to TUT2-04)
 
 ### Phase 4: Hotfix Parallel (Scenario 3)
 **Goal**: 독자가 feature worktree 작업을 중단하지 않고 hotfix를 main에 적용하고 rebase하는 전체 흐름을 완수한다
@@ -103,6 +103,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | ✓ Complete | 2026-03-05 |
 | 2. Parallel Modules (Scenario 1) | 3/3 | ✓ Complete | 2026-03-05 |
-| 3. Merge + Conflict Resolution (Scenario 2) | 0/3 | Not started | - |
+| 3. Merge + Conflict Resolution (Scenario 2) | 3/3 | ✓ Complete | 2026-03-05 |
 | 4. Hotfix Parallel (Scenario 3) | 0/1 | Not started | - |
 | 5. CI/CD Integration (Scenario 4) | 0/1 | Not started | - |
