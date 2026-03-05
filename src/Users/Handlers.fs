@@ -48,12 +48,14 @@ module Handlers =
 
     let delete (id: Guid) : HttpHandler =
         fun next ctx ->
-            if Domain.delete id then
+            match Domain.getById id with
+            | None ->
+                ctx.SetStatusCode 404
+                json (ApiResponse.error (sprintf "User %O not found" id)) next ctx
+            | Some _ ->
+                Domain.delete id |> ignore
                 ctx.SetStatusCode 204
                 next ctx
-            else
-                ctx.SetStatusCode 404
-                json (ApiResponse.error "User not found") next ctx
 
     let routes: HttpHandler =
         subRoute
