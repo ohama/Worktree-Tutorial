@@ -76,10 +76,10 @@ Plans:
   1. hotfix worktree에서 패치를 적용하고 main에 merge하는 과정이 tutorial 챕터에 단계별로 문서화되어 있다
   2. feature worktree를 updated main에 rebase하는 과정이 실행 가능한 명령어와 함께 문서화되어 있다
   3. worktree cleanup 가이드 (lifecycle 전체 마무리)가 tutorial에 포함되어 있다
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 04-01: Tutorial chapter 04 — Hotfix parallel + worktree cleanup (TUT3-01 to TUT3-03, TUTC-04)
+- [ ] 04-01-PLAN.md — Hotfix parallel workflow: create worktrees, apply hotfix, merge, rebase feature, cleanup lifecycle (TUT3-01 to TUT3-03, TUTC-04)
 
 ### Phase 5: CI/CD Integration (Scenario 4)
 **Goal**: 독자가 GitHub Actions matrix strategy로 per-module 병렬 빌드를 실제 CI 환경에서 동작시킬 수 있다
