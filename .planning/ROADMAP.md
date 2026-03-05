@@ -89,10 +89,10 @@ Plans:
   1. GitHub Actions workflow 파일이 repository에 존재하고 matrix strategy로 각 모듈을 독립적으로 빌드한다
   2. CI에서 worktree cleanup이 자동으로 수행되는 step이 workflow에 포함되어 있다
   3. tutorial 챕터가 GitHub Actions YAML을 line-by-line으로 설명한다
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 05-01: GitHub Actions workflow + tutorial chapter 05 — CI/CD integration (TUT4-01 to TUT4-03)
+- [ ] 05-01-PLAN.md — GitHub Actions workflow + tutorial chapter 05 corrections (TUT4-01 to TUT4-03)
 
 ## Progress
 
